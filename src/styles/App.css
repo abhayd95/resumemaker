@@ -620,9 +620,19 @@ body {
 }
 
 .selected-badge {
-  margin-top: 1rem;
-  color: #667eea;
-  font-weight: 600;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 25px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  z-index: 3;
+  animation: badgePulse 2s ease-in-out infinite;
+  letter-spacing: 0.5px;
 }
 
 .template-actions {
