@@ -5,9 +5,14 @@ import TemplateSelectorWith1000 from './components/TemplateSelectorWith1000'
 import ResumePreview from './components/ResumePreview'
 import SaveLoadPanel from './components/SaveLoadPanel'
 import DemoResumeModal from './components/DemoResumeModal'
+import ThemeToggle from './components/ThemeToggle'
+import ResumeShareModal from './components/ResumeShareModal'
+import ATSChecker from './components/ATSChecker'
 import { resumeAPI } from './utils/api'
+import { initTheme } from './utils/theme'
 import './styles/App.css'
 import './styles/MultiStepForm.css'
+import './styles/AdditionalFeatures.css'
 
 function App() {
   const [formData, setFormData] = useState({
@@ -40,7 +45,15 @@ function App() {
   const [savedResumes, setSavedResumes] = useState([])
   const [showSaveLoad, setShowSaveLoad] = useState(false)
   const [showDemoModal, setShowDemoModal] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
+  const [showATSChecker, setShowATSChecker] = useState(false)
+  const [selectedResumeForShare, setSelectedResumeForShare] = useState(null)
   const [currentResumeId, setCurrentResumeId] = useState(null)
+
+  // Initialize theme
+  useEffect(() => {
+    initTheme()
+  }, [])
 
   // Get user name from email or prompt
   useEffect(() => {
@@ -280,11 +293,63 @@ function App() {
     }
   }
 
+  const handleShareResume = (resume) => {
+    setSelectedResumeForShare(resume)
+    setShowShareModal(true)
+  }
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ctrl+S or Cmd+S - Save
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault()
+        if (step === 2 || step === 3) {
+          handleSaveResume()
+        }
+      }
+      
+      // Ctrl+D or Cmd+D - Download
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault()
+        if (step === 3) {
+          const resumeElement = document.querySelector('.resume-wrapper')
+          if (resumeElement) {
+            const { generatePDF } = require('./utils/pdfGenerator')
+            generatePDF(resumeElement, formData.personalInfo?.fullName || 'resume')
+          }
+        }
+      }
+      
+      // Ctrl+K or Cmd+K - ATS Checker
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault()
+        setShowATSChecker(true)
+      }
+      
+      // Escape - Close modals
+      if (e.key === 'Escape') {
+        if (showShareModal) setShowShareModal(false)
+        if (showATSChecker) setShowATSChecker(false)
+        if (showSaveLoad) setShowSaveLoad(false)
+        if (showDemoModal) setShowDemoModal(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal])
+
   return (
     <div className="app">
       <header className="app-header">
-        <h1>📄 Resume Maker</h1>
-        <p>Create Professional Resumes in Minutes</p>
+        <div className="header-top">
+          <div className="header-title-section">
+            <h1>📄 Resume Maker</h1>
+            <p>Create Professional Resumes in Minutes</p>
+          </div>
+          <ThemeToggle />
+        </div>
         <div className="header-actions">
           <button 
             onClick={() => setShowDemoModal(true)} 
@@ -312,6 +377,15 @@ function App() {
           >
             {showSaveLoad ? '✕ Close' : '💾 Saved Resumes'}
           </button>
+          {step === 1 && (
+            <button 
+              onClick={() => setShowATSChecker(true)} 
+              className="btn-ats"
+              title="Check ATS Compatibility (Ctrl+K)"
+            >
+              ✅ ATS Check
+            </button>
+          )}
           {(step === 2 || step === 3) && (
             <button onClick={handleSaveResume} className="btn-save">
               💾 Save Resume
@@ -335,10 +409,29 @@ function App() {
           onView={handleViewResume}
           onEdit={handleEditResume}
           onDownload={handleDownloadResume}
+          onShare={handleShareResume}
           onClose={() => setShowSaveLoad(false)}
           userName={userName}
         />
       )}
+
+      {showShareModal && selectedResumeForShare && (
+        <ResumeShareModal
+          isOpen={showShareModal}
+          onClose={() => {
+            setShowShareModal(false)
+            setSelectedResumeForShare(null)
+          }}
+          resume={selectedResumeForShare}
+          userName={userName}
+        />
+      )}
+
+      <ATSChecker
+        isOpen={showATSChecker}
+        onClose={() => setShowATSChecker(false)}
+        formData={formData}
+      />
 
       {/* Step Progress Indicator */}
       <div className="step-indicator">

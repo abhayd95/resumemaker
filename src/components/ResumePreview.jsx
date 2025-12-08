@@ -7,12 +7,21 @@ import Template5 from './templates/Template5'
 import Template6 from './templates/Template6'
 import Template7 from './templates/Template7'
 import { generatePDF } from '../utils/pdfGenerator'
+import { exportToWord } from '../utils/wordExporter'
 
 const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave }) => {
   const resumeRef = useRef(null)
 
   const handleDownload = () => {
     generatePDF(resumeRef.current, data.personalInfo.fullName || 'resume')
+  }
+
+  const handleDownloadWord = async () => {
+    try {
+      await exportToWord(data, data.personalInfo.fullName || 'resume')
+    } catch (error) {
+      alert('Error exporting to Word: ' + error.message)
+    }
   }
 
   const handlePrintPreview = () => {
@@ -55,6 +64,9 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave }
           )}
           <button onClick={handlePrintPreview} className="btn-print">
             🖨️ Print Preview
+          </button>
+          <button onClick={handleDownloadWord} className="btn-word">
+            📄 Download Word
           </button>
           <button onClick={handleDownload} className="btn-primary">
             📥 Download PDF
