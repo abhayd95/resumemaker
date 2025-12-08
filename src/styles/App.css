@@ -1381,19 +1381,41 @@ body {
 }
 
 .demo-preview-mini {
-  max-height: 200px;
+  height: 300px;
   overflow: hidden;
-  margin-bottom: 1rem;
-  border: 1px solid #eee;
+  margin: 1rem 0;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  background: #f9f9f9;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.demo-preview-mini .demo-preview-wrapper {
+  transform: scale(0.25);
+  transform-origin: top center;
+  width: 400%;
+  height: 400%;
+  overflow: visible;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -200%;
+}
+
+.demo-preview-mini .resume-wrapper {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
-  transform: scale(0.3);
-  transform-origin: top left;
-  width: 333.33%;
-  margin-left: -116.67%;
+  overflow: hidden;
 }
 
 .demo-preview-mini .resume-template {
-  font-size: 0.3em;
+  font-size: 1em;
+  pointer-events: none;
 }
 
 .demo-card-actions {

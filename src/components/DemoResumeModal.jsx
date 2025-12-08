@@ -321,7 +321,7 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
     }, 800)
   }
 
-  const renderDemoPreview = (demo) => {
+  const renderDemoPreview = (demo, isMini = false) => {
     const templates = {
       1: Template1,
       2: Template2,
@@ -332,9 +332,21 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
       7: Template7
     }
     const Template = templates[demo.template] || Template1
+    const colorTheme = demo.data.colorTheme || 'blue'
+    
+    if (isMini) {
+      return (
+        <div className="demo-preview-wrapper">
+          <div className="resume-wrapper" style={{ minHeight: 'auto' }}>
+            <Template data={demo.data} colorTheme={colorTheme} />
+          </div>
+        </div>
+      )
+    }
+    
     return (
       <div className="demo-preview-wrapper">
-        <Template data={demo.data} colorTheme="blue" />
+        <Template data={demo.data} colorTheme={colorTheme} />
       </div>
     )
   }
@@ -405,7 +417,7 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
                 <span className="demo-template-badge">Template {demo.template}</span>
               </div>
               <div className="demo-preview-mini">
-                {renderDemoPreview(demo)}
+                {renderDemoPreview(demo, true)}
               </div>
               <div className="demo-card-actions">
                 <button 
