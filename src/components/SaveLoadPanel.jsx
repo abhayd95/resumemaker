@@ -14,17 +14,23 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
     })
   }
 
-  // Filter and search resumes
+  // Filter and search resumes with error handling
   const filteredResumes = resumes.filter(resume => {
-    const resumeData = typeof resume.resume_data === 'string' 
-      ? JSON.parse(resume.resume_data) 
-      : resume.resume_data
-    const name = resumeData.personalInfo?.fullName || 'Untitled Resume'
-    
-    const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesTemplate = filterTemplate === 'all' || resume.template_id === parseInt(filterTemplate)
-    
-    return matchesSearch && matchesTemplate
+    try {
+      const resumeData = typeof resume.resume_data === 'string' 
+        ? JSON.parse(resume.resume_data) 
+        : resume.resume_data
+      const name = resumeData?.personalInfo?.fullName || 'Untitled Resume'
+      
+      const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesTemplate = filterTemplate === 'all' || resume.template_id === parseInt(filterTemplate)
+      
+      return matchesSearch && matchesTemplate
+    } catch (error) {
+      console.error('Error parsing resume data:', error)
+      // Include resume even if parsing fails, but it won't match search
+      return filterTemplate === 'all' || resume.template_id === parseInt(filterTemplate)
+    }
   })
 
   // Sort resumes
@@ -104,10 +110,17 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
       ) : (
         <div className="resumes-list">
           {sortedResumes.map((resume) => {
-            const resumeData = typeof resume.resume_data === 'string' 
-              ? JSON.parse(resume.resume_data) 
-              : resume.resume_data
-            const name = resumeData.personalInfo?.fullName || 'Untitled Resume'
+            let resumeData
+            let name = 'Untitled Resume'
+            try {
+              resumeData = typeof resume.resume_data === 'string' 
+                ? JSON.parse(resume.resume_data) 
+                : resume.resume_data
+              name = resumeData?.personalInfo?.fullName || 'Untitled Resume'
+            } catch (error) {
+              console.error('Error parsing resume data for display:', error)
+              resumeData = {}
+            }
             
             return (
               <div key={resume.id} className="resume-item">

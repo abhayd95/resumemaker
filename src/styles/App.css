@@ -178,6 +178,22 @@ body::before {
   letter-spacing: 0.5px;
 }
 
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.resume-count-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 0.2rem 0.5rem;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
 .btn-save-load::before,
 .btn-save::before {
   content: '';

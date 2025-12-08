@@ -1,4 +1,8 @@
-const API_BASE_URL = 'http://localhost:3001/api'
+// Dynamic API URL - works for both local and production
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3001/api' 
+    : '/api')
 
 export const resumeAPI = {
   // Get all resumes for a user

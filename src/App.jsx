@@ -100,18 +100,30 @@ function App() {
   }, [])
 
   const loadSavedResumes = async (name) => {
-    if (!name) return
+    if (!name || name.trim() === '') {
+      setSavedResumes([])
+      return
+    }
     try {
-      const result = await resumeAPI.getAllResumes(name)
+      const result = await resumeAPI.getAllResumes(name.trim())
       if (result.success) {
         setSavedResumes(result.resumes || [])
+        console.log(`✅ Loaded ${result.resumes?.length || 0} saved resumes`)
       } else {
         console.error('Error loading resumes:', result.error)
         setSavedResumes([])
+        // Don't show alert for empty results, only for actual errors
+        if (result.error && !result.error.includes('not found')) {
+          console.warn('Could not load resumes:', result.error)
+        }
       }
     } catch (error) {
       console.error('Error loading resumes:', error)
       setSavedResumes([])
+      // Only show error if it's a network/server error, not just empty results
+      if (error.message && !error.message.includes('Failed to fetch')) {
+        console.warn('Network error loading resumes:', error.message)
+      }
     }
   }
 
@@ -140,9 +152,12 @@ function App() {
   const handleSaveResume = async () => {
     if (!userName) {
       const name = prompt('Please enter your name/username to save resume:')
-      if (!name) return
-      setUserName(name)
-      localStorage.setItem('resumeUserName', name)
+      if (!name || name.trim() === '') {
+        alert('Username is required to save resume.')
+        return
+      }
+      setUserName(name.trim())
+      localStorage.setItem('resumeUserName', name.trim())
     }
 
     // Validate that form has at least some data
@@ -151,25 +166,48 @@ function App() {
       return
     }
 
+    // Show loading state
+    const saveButton = document.querySelector('.btn-save')
+    const originalText = saveButton?.textContent
+    if (saveButton) {
+      saveButton.disabled = true
+      saveButton.textContent = '💾 Saving...'
+    }
+
     try {
+      // Check API health first
+      const healthCheck = await resumeAPI.healthCheck()
+      if (!healthCheck.success) {
+        throw new Error('Server is not responding. Please make sure the backend server is running.')
+      }
+
       const result = currentResumeId
         ? await resumeAPI.updateResume(currentResumeId, userName, formData, selectedTemplate)
         : await resumeAPI.saveResume(userName, formData, selectedTemplate)
 
       if (result.success) {
-        alert('Resume saved successfully!')
+        // Success notification
+        const successMsg = currentResumeId ? 'Resume updated successfully!' : 'Resume saved successfully!'
+        alert(successMsg)
         setCurrentResumeId(result.id || currentResumeId)
         await loadSavedResumes(userName)
         // Refresh the saved resumes panel if it's open
         if (showSaveLoad) {
-          setShowSaveLoad(false)
-          setTimeout(() => setShowSaveLoad(true), 100)
+          await loadSavedResumes(userName)
         }
       } else {
-        alert('Error saving resume: ' + result.error)
+        throw new Error(result.error || 'Failed to save resume')
       }
     } catch (error) {
-      alert('Error saving resume: ' + error.message)
+      console.error('Save error:', error)
+      const errorMsg = error.message || 'Unknown error occurred'
+      alert(`Error saving resume: ${errorMsg}\n\nPlease check:\n1. Backend server is running\n2. Database connection is working\n3. You have internet connection`)
+    } finally {
+      // Restore button state
+      if (saveButton) {
+        saveButton.disabled = false
+        if (originalText) saveButton.textContent = originalText
+      }
     }
   }
 
@@ -366,10 +404,11 @@ function App() {
                 // Opening the panel
                 if (!userName) {
                   const name = prompt('Please enter your name/username to view saved resumes:')
-                  if (!name) return
-                  setUserName(name)
-                  localStorage.setItem('resumeUserName', name)
-                  await loadSavedResumes(name)
+                  if (!name || name.trim() === '') return
+                  const trimmedName = name.trim()
+                  setUserName(trimmedName)
+                  localStorage.setItem('resumeUserName', trimmedName)
+                  await loadSavedResumes(trimmedName)
                 } else {
                   await loadSavedResumes(userName)
                 }
@@ -377,8 +416,12 @@ function App() {
               setShowSaveLoad(!showSaveLoad)
             }} 
             className="btn-save-load"
+            title="View and manage your saved resumes"
           >
             {showSaveLoad ? '✕ Close' : '💾 Saved Resumes'}
+            {savedResumes.length > 0 && (
+              <span className="resume-count-badge">{savedResumes.length}</span>
+            )}
           </button>
           {step === 1 && (
             <button 
@@ -389,8 +432,13 @@ function App() {
               ✅ ATS Check
             </button>
           )}
+          {step === 1 && formData.personalInfo.fullName && (
+            <button onClick={handleSaveResume} className="btn-save" title="Save as Draft (Ctrl+S)">
+              💾 Save Draft
+            </button>
+          )}
           {(step === 2 || step === 3) && (
-            <button onClick={handleSaveResume} className="btn-save">
+            <button onClick={handleSaveResume} className="btn-save" title="Save Resume (Ctrl+S)">
               💾 Save Resume
             </button>
           )}
