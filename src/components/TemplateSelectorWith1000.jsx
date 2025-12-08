@@ -125,15 +125,26 @@ const TemplateSelectorWith1000 = ({ selectedTemplate, colorTheme, onSelect, onTh
         {currentTemplates.map(template => (
           <div
             key={template.id}
-            className={`template-card ${selectedTemplate === template.id ? 'selected' : ''}`}
+            className={`template-card premium-card ${selectedTemplate === template.id ? 'selected' : ''}`}
             onClick={() => onSelect(template.id)}
           >
+            <div className="card-glow"></div>
             <div className="template-preview">{template.preview || '📄'}</div>
-            <h3>{template.name}</h3>
-            <p>{template.description}</p>
+            <div className="template-card-content">
+              <h3>{template.name}</h3>
+              <p>{template.description}</p>
+              <div className="template-features">
+                <span className="feature-tag">{template.style || 'Modern'}</span>
+                <span className="feature-tag">{template.colorTheme || 'Blue'}</span>
+                <span className="feature-tag">{template.layout || 'Standard'}</span>
+              </div>
+            </div>
             {selectedTemplate === template.id && (
-              <div className="selected-badge">✓ Selected</div>
+              <div className="selected-badge">
+                <span className="check-icon">✓</span> Selected
+              </div>
             )}
+            <div className="card-hover-effect"></div>
           </div>
         ))}
       </div>
