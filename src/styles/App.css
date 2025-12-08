@@ -10,9 +10,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
   background-attachment: fixed;
   min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .app {
@@ -22,21 +37,44 @@ body {
 }
 
 .app-header {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 2.5rem 2rem;
   text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 10;
+}
+
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
 }
 
 .app-header h1 {
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 0.5rem;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
 }
 
 .app-header p {
-  color: #666;
-  font-size: 1.1rem;
+  color: #555;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .header-actions {
@@ -49,22 +87,78 @@ body {
 
 .btn-save-load,
 .btn-save {
-  padding: 0.5rem 1rem;
+  padding: 0.875rem 2rem;
   border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  border-radius: 12px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 600;
-  background: #28a745;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-weight: 700;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.btn-save-load::before,
+.btn-save::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-save-load:hover::before,
+.btn-save:hover::before {
+  left: 100%;
 }
 
 .btn-save-load:hover,
 .btn-save:hover {
-  background: #218838;
-  transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(40, 167, 69, 0.5);
+}
+
+.btn-demo {
+  padding: 0.875rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-weight: 700;
+  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.4);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.btn-demo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-demo:hover::before {
+  left: 100%;
+}
+
+.btn-demo:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(20, 184, 166, 0.5);
 }
 
 .save-load-panel {
@@ -251,6 +345,15 @@ body {
   margin: 2rem auto 1rem;
   padding: 0 1rem;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .step {
@@ -263,55 +366,110 @@ body {
 }
 
 .step-number {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: #e0e0e0;
+  background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
   color: #999;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s;
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.step-number::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.step-number:hover::before {
+  opacity: 1;
 }
 
 .step.active .step-number {
-  background: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.3), 0 8px 25px rgba(102, 126, 234, 0.4);
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.3), 0 8px 25px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(102, 126, 234, 0.4), 0 10px 30px rgba(102, 126, 234, 0.5);
+  }
 }
 
 .step.completed .step-number {
-  background: #28a745;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;
+  box-shadow: 0 4px 20px rgba(40, 167, 69, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .step-label {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
 }
 
 .step.active .step-label {
-  color: #667eea;
-  font-weight: 600;
+  color: white;
+  font-weight: 700;
+  transform: scale(1.05);
+  text-shadow: 0 2px 8px rgba(102, 126, 234, 0.5);
 }
 
 .step-connector {
   flex: 1;
-  height: 3px;
-  background: #e0e0e0;
-  margin: 0 1rem;
-  margin-top: -20px;
-  min-width: 50px;
-  transition: all 0.3s;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+  margin: 0 1.5rem;
+  margin-top: -30px;
+  min-width: 80px;
+  transition: all 0.4s;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
 }
 
-.step-connector.active {
-  background: #667eea;
+.step-connector::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.6s ease;
+  border-radius: 2px;
+}
+
+.step-connector.active::before {
+  width: 100%;
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
 }
 
 .app-container {
@@ -320,14 +478,31 @@ body {
   width: 100%;
   margin: 2rem auto;
   padding: 0 1rem;
+  position: relative;
+  z-index: 5;
 }
 
 .resume-form {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  animation: fadeInUp 0.5s ease-out;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  animation: fadeInUp 0.6s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
 }
 
 @keyframes fadeInUp {
@@ -797,10 +972,32 @@ body {
 
 .app-footer {
   background: rgba(255, 255, 255, 0.95);
-  padding: 1.5rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 2rem 1.5rem;
   text-align: center;
   color: #666;
   margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
+}
+
+.app-footer a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-footer a:hover {
+  transform: scale(1.05);
+  text-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 @media (max-width: 768px) {
