@@ -57,11 +57,7 @@ async function initializeDatabase() {
   try {
     const connection = await pool.getConnection()
     
-    // Create database if it doesn't exist
-    await connection.query('CREATE DATABASE IF NOT EXISTS resumemaker')
-    await connection.query('USE resumemaker')
-    
-    // Create resumes table
+    // Create resumes table (database already exists from db.js)
     await connection.query(`
       CREATE TABLE IF NOT EXISTS resumes (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,6 +75,7 @@ async function initializeDatabase() {
     console.log('✅ Database tables initialized')
   } catch (error) {
     console.error('❌ Error initializing database:', error.message)
+    console.error('Full error:', error)
   }
 }
 

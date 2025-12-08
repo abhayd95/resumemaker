@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Template1 from './templates/Template1'
 import Template2 from './templates/Template2'
 import Template3 from './templates/Template3'
@@ -6,12 +6,18 @@ import Template4 from './templates/Template4'
 import Template5 from './templates/Template5'
 import Template6 from './templates/Template6'
 import Template7 from './templates/Template7'
+import { generateDemoResumes, searchDemos, filterDemosByTemplate } from '../utils/demoResumeGenerator'
+import { generatePDF } from '../utils/pdfGenerator'
 
 const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
   const [selectedDemo, setSelectedDemo] = useState(null)
-  const [selectedTemplate, setSelectedTemplate] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterTemplate, setFilterTemplate] = useState('all')
+  const [currentPage, setCurrentPage] = useState(1)
+  const demosPerPage = 12
 
-  const demoResumes = [
+  // Original 4 demo resumes
+  const originalDemos = [
     {
       id: 1,
       name: 'Software Engineer',
@@ -25,6 +31,9 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
           linkedin: 'https://linkedin.com/in/johnsmith',
           github: 'https://github.com/johnsmith',
           website: 'https://johnsmith.dev',
+          instagram: '',
+          facebook: '',
+          telegram: '',
           photo: 'https://via.placeholder.com/150'
         },
         summary: 'Experienced software engineer with 5+ years of expertise in full-stack development. Specialized in React, Node.js, and cloud technologies. Passionate about building scalable applications and leading development teams.',
@@ -64,7 +73,9 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
             technologies: 'React, Node.js, MongoDB, Stripe',
             link: 'https://example.com'
           }
-        ]
+        ],
+        languages: [],
+        certifications: []
       }
     },
     {
@@ -78,6 +89,11 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
           phone: '+1 (555) 987-6543',
           address: 'New York, NY',
           linkedin: 'https://linkedin.com/in/sarahjohnson',
+          github: '',
+          website: '',
+          instagram: '',
+          facebook: '',
+          telegram: '',
           photo: 'https://via.placeholder.com/150'
         },
         summary: 'Creative marketing professional with expertise in digital marketing, brand management, and campaign strategy. Proven track record of increasing brand awareness and driving revenue growth.',
@@ -102,7 +118,9 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
           }
         ],
         skills: ['Digital Marketing', 'SEO', 'Content Strategy', 'Analytics', 'Social Media'],
-        projects: []
+        projects: [],
+        languages: [],
+        certifications: []
       }
     },
     {
@@ -118,6 +136,9 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
           linkedin: 'https://linkedin.com/in/alexchen',
           github: 'https://github.com/alexchen',
           website: 'https://alexchen.design',
+          instagram: '',
+          facebook: '',
+          telegram: '',
           photo: 'https://via.placeholder.com/150'
         },
         summary: 'Creative graphic designer specializing in brand identity, web design, and digital illustrations. Passionate about creating visually stunning designs that tell compelling stories.',
@@ -149,7 +170,9 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
             technologies: 'Illustrator, Photoshop, Figma',
             link: 'https://example.com'
           }
-        ]
+        ],
+        languages: [],
+        certifications: []
       }
     },
     {
@@ -235,6 +258,35 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
     }
   ]
 
+  // Generate 1000+ demo resumes
+  const generatedDemos = useMemo(() => generateDemoResumes(), [])
+  
+  // Combine original and generated
+  const allDemos = useMemo(() => {
+    return [...originalDemos, ...generatedDemos]
+  }, [generatedDemos])
+
+  // Filter and search
+  const filteredDemos = useMemo(() => {
+    let demos = allDemos
+    
+    if (searchQuery) {
+      demos = searchDemos(searchQuery, demos)
+    }
+    
+    if (filterTemplate !== 'all') {
+      demos = filterDemosByTemplate(parseInt(filterTemplate), demos)
+    }
+    
+    return demos
+  }, [allDemos, searchQuery, filterTemplate])
+
+  // Pagination
+  const totalPages = Math.ceil(filteredDemos.length / demosPerPage)
+  const startIndex = (currentPage - 1) * demosPerPage
+  const endIndex = startIndex + demosPerPage
+  const currentDemos = filteredDemos.slice(startIndex, endIndex)
+
   if (!isOpen) return null
 
   const handleUseDemo = (demo) => {
@@ -242,6 +294,31 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
       onUseDemo(demo.data, demo.template)
     }
     onClose()
+  }
+
+  const handleDownloadDemo = async (demo, e) => {
+    e.stopPropagation()
+    
+    // Show preview first, then download
+    setSelectedDemo(demo)
+    
+    // Wait for preview to render, then download
+    setTimeout(() => {
+      const resumeElement = document.querySelector('.demo-preview-container .resume-wrapper')
+      if (resumeElement) {
+        generatePDF(resumeElement, demo.data.personalInfo?.fullName || 'demo-resume')
+      } else {
+        // Try again after a bit more time
+        setTimeout(() => {
+          const retryElement = document.querySelector('.demo-preview-container .resume-wrapper')
+          if (retryElement) {
+            generatePDF(retryElement, demo.data.personalInfo?.fullName || 'demo-resume')
+          } else {
+            alert('Please wait for preview to load, then click the Download PDF button in the preview section')
+          }
+        }, 1000)
+      }
+    }, 800)
   }
 
   const renderDemoPreview = (demo) => {
@@ -269,13 +346,59 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
           <h2>📋 View Demo Resumes</h2>
           <button onClick={onClose} className="btn-close-modal">✕</button>
         </div>
+
+        {/* Search and Filters */}
+        <div className="demo-filters">
+          <div className="demo-search-box">
+            <input
+              type="text"
+              placeholder="🔍 Search demo resumes..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setCurrentPage(1)
+              }}
+              className="demo-search-input"
+            />
+          </div>
+          <select
+            value={filterTemplate}
+            onChange={(e) => {
+              setFilterTemplate(e.target.value)
+              setCurrentPage(1)
+            }}
+            className="demo-filter-select"
+          >
+            <option value="all">All Templates</option>
+            <option value="1">Template 1</option>
+            <option value="2">Template 2</option>
+            <option value="3">Template 3</option>
+            <option value="4">Template 4</option>
+            <option value="5">Template 5</option>
+            <option value="6">Template 6</option>
+            <option value="7">Template 7</option>
+          </select>
+        </div>
+
+        <div className="demo-count">
+          Showing {currentDemos.length} of {filteredDemos.length} demo resumes
+        </div>
         
         <div className="demo-resumes-grid">
-          {demoResumes.map((demo) => (
+          {currentDemos.map((demo) => (
             <div 
               key={demo.id} 
               className={`demo-resume-card ${selectedDemo?.id === demo.id ? 'selected' : ''}`}
-              onClick={() => setSelectedDemo(demo)}
+              onClick={() => {
+                setSelectedDemo(demo)
+                // Scroll to preview section
+                setTimeout(() => {
+                  const previewSection = document.querySelector('.demo-full-preview')
+                  if (previewSection) {
+                    previewSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }, 100)
+              }}
             >
               <div className="demo-card-header">
                 <h3>{demo.name}</h3>
@@ -284,21 +407,97 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
               <div className="demo-preview-mini">
                 {renderDemoPreview(demo)}
               </div>
-              <button 
-                onClick={() => handleUseDemo(demo)}
-                className="btn-use-demo"
-              >
-                Use This Demo
-              </button>
+              <div className="demo-card-actions">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDownloadDemo(demo, e)
+                  }}
+                  className="btn-download-demo premium-download"
+                  title="Download Premium PDF"
+                >
+                  <span className="download-icon">⬇️</span>
+                  <span className="download-text">Download PDF</span>
+                  <span className="premium-badge">PREMIUM</span>
+                </button>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleUseDemo(demo)
+                  }}
+                  className="btn-use-demo"
+                >
+                  Use This Demo
+                </button>
+              </div>
             </div>
           ))}
         </div>
 
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="demo-pagination">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="pagination-btn"
+            >
+              ← Previous
+            </button>
+            <span className="pagination-info">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className="pagination-btn"
+            >
+              Next →
+            </button>
+          </div>
+        )}
+
         {selectedDemo && (
-          <div className="demo-full-preview">
-            <h3>Full Preview: {selectedDemo.name}</h3>
+          <div className="demo-full-preview" id="demo-preview-section">
+            <div className="demo-preview-header">
+              <div className="preview-title-section">
+                <h3>✨ Premium Preview: {selectedDemo.name}</h3>
+                <p className="preview-subtitle">Click Download to get your professional PDF resume</p>
+              </div>
+              <div className="demo-preview-actions">
+                <button 
+                  onClick={() => {
+                    const resumeElement = document.querySelector('.demo-preview-container .resume-wrapper')
+                    if (resumeElement) {
+                      generatePDF(resumeElement, selectedDemo.data.personalInfo?.fullName || 'demo-resume')
+                    } else {
+                      alert('Please wait for preview to load...')
+                    }
+                  }}
+                  className="btn-download-preview premium-download-btn"
+                >
+                  <span className="download-icon-large">⬇️</span>
+                  <span className="download-text-large">Download Premium PDF</span>
+                  <span className="premium-shine">✨</span>
+                </button>
+                <button 
+                  onClick={() => handleUseDemo(selectedDemo)}
+                  className="btn-use-preview"
+                >
+                  ✨ Use This Demo
+                </button>
+                <button 
+                  onClick={() => setSelectedDemo(null)}
+                  className="btn-close-preview"
+                >
+                  ✕ Close
+                </button>
+              </div>
+            </div>
             <div className="demo-preview-container">
-              {renderDemoPreview(selectedDemo)}
+              <div className="resume-wrapper">
+                {renderDemoPreview(selectedDemo)}
+              </div>
             </div>
           </div>
         )}
@@ -308,4 +507,3 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
 }
 
 export default DemoResumeModal
-

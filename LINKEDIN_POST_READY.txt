@@ -1,0 +1,33 @@
+🚀 Excited to share my latest project - A Complete Resume Maker Application! 📄
+
+I've built a full-stack resume builder that helps professionals create stunning resumes in minutes. Here's what makes it special:
+
+✨ Key Features:
+• 1000+ Professional Templates
+• Step-by-Step Form with Auto-save
+• Real-time Preview & PDF Download
+• Save & Manage Multiple Resumes
+• Autocomplete Suggestions for Skills & Job Titles
+• Mobile Responsive Design
+• Demo Resumes with One-Click Use
+
+🛠️ Tech Stack:
+• Frontend: React, Vite, Modern CSS
+• Backend: Node.js, Express.js
+• Database: MySQL
+• PDF Generation: jsPDF, html2canvas
+• Features: Auto-save, Search, Filters, Pagination
+
+💡 What I Learned:
+• Building scalable full-stack applications
+• Implementing complex form workflows
+• PDF generation from HTML
+• Database design and optimization
+• Responsive UI/UX design
+• Performance optimization
+
+🔗 Live Demo: [Add your Render/Vercel URL here]
+📂 GitHub: https://github.com/abhayd95/resumemaker
+
+#WebDevelopment #FullStackDeveloper #React #NodeJS #PortfolioProject #ResumeBuilder #JavaScript #MySQL #OpenSource #Coding #TechInnovation
+

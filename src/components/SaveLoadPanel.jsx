@@ -1,4 +1,4 @@
-const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onClose }) => {
+const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownload, onEdit, onClose }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', {
@@ -43,9 +43,37 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onClose }) => {
                   )}
                 </div>
                 <div className="resume-item-actions">
+                  {onView && (
+                    <button 
+                      onClick={() => onView(resume)} 
+                      className="btn-view"
+                      title="View Resume"
+                    >
+                      👁️ View
+                    </button>
+                  )}
+                  {onEdit && (
+                    <button 
+                      onClick={() => onEdit(resume)} 
+                      className="btn-edit"
+                      title="Edit Resume"
+                    >
+                      ✏️ Edit
+                    </button>
+                  )}
+                  {onDownload && (
+                    <button 
+                      onClick={() => onDownload(resume)} 
+                      className="btn-download"
+                      title="Download PDF"
+                    >
+                      ⬇️ Download
+                    </button>
+                  )}
                   <button 
                     onClick={() => onLoad(resume)} 
                     className="btn-load"
+                    title="Load Resume"
                   >
                     📂 Load
                   </button>
@@ -53,6 +81,7 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onClose }) => {
                     <button 
                       onClick={() => onDuplicate(resume)} 
                       className="btn-duplicate"
+                      title="Duplicate Resume"
                     >
                       📋 Duplicate
                     </button>
@@ -60,6 +89,7 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onClose }) => {
                   <button 
                     onClick={() => onDelete(resume.id)} 
                     className="btn-delete"
+                    title="Delete Resume"
                   >
                     🗑️ Delete
                   </button>
@@ -74,4 +104,3 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onClose }) => {
 }
 
 export default SaveLoadPanel
-

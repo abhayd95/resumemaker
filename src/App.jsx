@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import MultiStepForm from './components/MultiStepForm'
 import TemplateSelector from './components/TemplateSelector'
+import TemplateSelectorWith1000 from './components/TemplateSelectorWith1000'
 import ResumePreview from './components/ResumePreview'
 import SaveLoadPanel from './components/SaveLoadPanel'
 import DemoResumeModal from './components/DemoResumeModal'
@@ -197,6 +198,64 @@ function App() {
     setShowDemoModal(false)
   }
 
+  const handleViewResume = (resume) => {
+    try {
+      const resumeData = typeof resume.resume_data === 'string' 
+        ? JSON.parse(resume.resume_data) 
+        : resume.resume_data
+      
+      setFormData(resumeData)
+      setSelectedTemplate(resume.template_id || 1)
+      setStep(3) // Go directly to preview
+      setShowSaveLoad(false)
+    } catch (error) {
+      alert('Error viewing resume: ' + error.message)
+    }
+  }
+
+  const handleEditResume = (resume) => {
+    try {
+      const resumeData = typeof resume.resume_data === 'string' 
+        ? JSON.parse(resume.resume_data) 
+        : resume.resume_data
+      
+      setFormData(resumeData)
+      setSelectedTemplate(resume.template_id || 1)
+      setCurrentResumeId(resume.id)
+      setStep(1) // Go to form to edit
+      setShowSaveLoad(false)
+    } catch (error) {
+      alert('Error loading resume for editing: ' + error.message)
+    }
+  }
+
+  const handleDownloadResume = async (resume) => {
+    try {
+      const resumeData = typeof resume.resume_data === 'string' 
+        ? JSON.parse(resume.resume_data) 
+        : resume.resume_data
+      
+      // Show preview first, then download
+      setFormData(resumeData)
+      setSelectedTemplate(resume.template_id || 1)
+      setStep(3)
+      setShowSaveLoad(false)
+      
+      // Wait for preview to render, then download
+      setTimeout(() => {
+        const { generatePDF } = require('./utils/pdfGenerator')
+        const resumeElement = document.querySelector('.resume-wrapper')
+        if (resumeElement) {
+          generatePDF(resumeElement, resumeData.personalInfo?.fullName || 'resume')
+        } else {
+          alert('Please wait for preview to load, then click Download PDF button')
+        }
+      }, 1000)
+    } catch (error) {
+      alert('Error downloading resume: ' + error.message)
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -235,6 +294,9 @@ function App() {
           onLoad={handleLoadResume}
           onDelete={handleDeleteResume}
           onDuplicate={handleDuplicateResume}
+          onView={handleViewResume}
+          onEdit={handleEditResume}
+          onDownload={handleDownloadResume}
           onClose={() => setShowSaveLoad(false)}
         />
       )}
@@ -266,7 +328,7 @@ function App() {
         )}
 
         {step === 2 && (
-          <TemplateSelector 
+          <TemplateSelectorWith1000 
             selectedTemplate={selectedTemplate}
             colorTheme={colorTheme}
             onSelect={handleTemplateSelect}

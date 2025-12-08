@@ -1,0 +1,30 @@
+🎥 Watch me showcase my Resume Maker Application! 🎥
+
+In this video, I demonstrate a complete Resume Builder with amazing features:
+
+🎬 Step-by-step resume creation process
+🎨 1000+ professional templates
+📥 One-click PDF download
+💾 Save & manage multiple resumes
+📱 Fully responsive design
+
+Tech Stack:
+• React (Frontend)
+• Node.js + Express.js (Backend)
+• MySQL (Database)
+• jsPDF (PDF Generation)
+
+This project demonstrates my skills in:
+✅ Full-stack development
+✅ UI/UX design
+✅ Database management
+✅ API development
+✅ Responsive design
+
+🔗 Live Demo: [Your URL]
+💻 Source Code: https://github.com/abhayd95/resumemaker
+
+What features would you like to see next? Drop your suggestions! 💬
+
+#WebDevelopment #FullStackDeveloper #React #NodeJS #ResumeBuilder #Coding #TechDemo #PortfolioProject #JavaScript #MySQL
+
