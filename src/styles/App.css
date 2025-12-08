@@ -113,6 +113,13 @@ body {
   color: #666;
 }
 
+.no-resumes .hint-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #999;
+  font-style: italic;
+}
+
 .resumes-list {
   display: flex;
   flex-direction: column;

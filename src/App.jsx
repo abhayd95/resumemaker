@@ -84,9 +84,18 @@ function App() {
   }, [])
 
   const loadSavedResumes = async (name) => {
-    const result = await resumeAPI.getAllResumes(name)
-    if (result.success) {
-      setSavedResumes(result.resumes)
+    if (!name) return
+    try {
+      const result = await resumeAPI.getAllResumes(name)
+      if (result.success) {
+        setSavedResumes(result.resumes || [])
+      } else {
+        console.error('Error loading resumes:', result.error)
+        setSavedResumes([])
+      }
+    } catch (error) {
+      console.error('Error loading resumes:', error)
+      setSavedResumes([])
     }
   }
 
@@ -120,16 +129,31 @@ function App() {
       localStorage.setItem('resumeUserName', name)
     }
 
-    const result = currentResumeId
-      ? await resumeAPI.updateResume(currentResumeId, userName, formData, selectedTemplate)
-      : await resumeAPI.saveResume(userName, formData, selectedTemplate)
+    // Validate that form has at least some data
+    if (!formData.personalInfo.fullName && !formData.personalInfo.email) {
+      alert('Please fill in at least your name or email before saving.')
+      return
+    }
 
-    if (result.success) {
-      alert('Resume saved successfully!')
-      setCurrentResumeId(result.id || currentResumeId)
-      loadSavedResumes(userName)
-    } else {
-      alert('Error saving resume: ' + result.error)
+    try {
+      const result = currentResumeId
+        ? await resumeAPI.updateResume(currentResumeId, userName, formData, selectedTemplate)
+        : await resumeAPI.saveResume(userName, formData, selectedTemplate)
+
+      if (result.success) {
+        alert('Resume saved successfully!')
+        setCurrentResumeId(result.id || currentResumeId)
+        await loadSavedResumes(userName)
+        // Refresh the saved resumes panel if it's open
+        if (showSaveLoad) {
+          setShowSaveLoad(false)
+          setTimeout(() => setShowSaveLoad(true), 100)
+        }
+      } else {
+        alert('Error saving resume: ' + result.error)
+      }
+    } catch (error) {
+      alert('Error saving resume: ' + error.message)
     }
   }
 
@@ -269,7 +293,21 @@ function App() {
             📋 View Demo Resumes
           </button>
           <button 
-            onClick={() => setShowSaveLoad(!showSaveLoad)} 
+            onClick={async () => {
+              if (!showSaveLoad) {
+                // Opening the panel
+                if (!userName) {
+                  const name = prompt('Please enter your name/username to view saved resumes:')
+                  if (!name) return
+                  setUserName(name)
+                  localStorage.setItem('resumeUserName', name)
+                  await loadSavedResumes(name)
+                } else {
+                  await loadSavedResumes(userName)
+                }
+              }
+              setShowSaveLoad(!showSaveLoad)
+            }} 
             className="btn-save-load"
           >
             {showSaveLoad ? '✕ Close' : '💾 Saved Resumes'}
@@ -288,7 +326,7 @@ function App() {
         onUseDemo={handleUseDemo}
       />
 
-      {showSaveLoad && userName && (
+      {showSaveLoad && (
         <SaveLoadPanel
           resumes={savedResumes}
           onLoad={handleLoadResume}
@@ -298,6 +336,7 @@ function App() {
           onEdit={handleEditResume}
           onDownload={handleDownloadResume}
           onClose={() => setShowSaveLoad(false)}
+          userName={userName}
         />
       )}
 

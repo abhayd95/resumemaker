@@ -1,4 +1,4 @@
-const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownload, onEdit, onClose }) => {
+const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownload, onEdit, onClose, userName }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', {
@@ -17,9 +17,14 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
         <button onClick={onClose} className="btn-close">✕</button>
       </div>
       
-      {resumes.length === 0 ? (
+      {!userName ? (
+        <div className="no-resumes">
+          <p>Please enter your username to view saved resumes.</p>
+        </div>
+      ) : resumes.length === 0 ? (
         <div className="no-resumes">
           <p>No saved resumes yet. Save your first resume to see it here!</p>
+          <p className="hint-text">Go to step 2 or 3 and click "Save Resume" to save your resume.</p>
         </div>
       ) : (
         <div className="resumes-list">
