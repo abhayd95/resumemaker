@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import resumeRoutes from './routes/resumeRoutes.js'
-import pool from './config/db.js'
+import { initializePool, getPool } from './config/db.js'
 
 dotenv.config()
 
@@ -25,6 +25,7 @@ app.use('/api/resumes', resumeRoutes)
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
   try {
+    const pool = await getPool()
     await pool.getConnection()
     res.json({ 
       success: true, 
@@ -55,6 +56,7 @@ app.get('*', (req, res) => {
 // Initialize database tables
 async function initializeDatabase() {
   try {
+    const pool = await getPool()
     const connection = await pool.getConnection()
     
     // Create resumes table (database already exists from db.js)
@@ -82,6 +84,8 @@ async function initializeDatabase() {
 // Start server
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`)
+  // Initialize database connection and tables
+  await initializePool()
   await initializeDatabase()
 })
 

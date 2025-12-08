@@ -1,11 +1,12 @@
 import express from 'express'
-import pool from '../config/db.js'
+import { getPool } from '../config/db.js'
 
 const router = express.Router()
 
 // Get all resumes for a user
 router.get('/:userName', async (req, res) => {
   try {
+    const pool = await getPool()
     const { userName } = req.params
     const [rows] = await pool.execute(
       'SELECT * FROM resumes WHERE user_name = ? ORDER BY created_at DESC',
@@ -21,6 +22,7 @@ router.get('/:userName', async (req, res) => {
 // Get a specific resume by ID
 router.get('/:userName/:id', async (req, res) => {
   try {
+    const pool = await getPool()
     const { userName, id } = req.params
     const [rows] = await pool.execute(
       'SELECT * FROM resumes WHERE id = ? AND user_name = ?',
@@ -39,6 +41,7 @@ router.get('/:userName/:id', async (req, res) => {
 // Save a new resume
 router.post('/save', async (req, res) => {
   try {
+    const pool = await getPool()
     const { userName, resumeData, templateId } = req.body
 
     if (!userName || !resumeData) {
@@ -67,6 +70,7 @@ router.post('/save', async (req, res) => {
 // Update an existing resume
 router.put('/:id', async (req, res) => {
   try {
+    const pool = await getPool()
     const { id } = req.params
     const { userName, resumeData, templateId } = req.body
 
@@ -96,6 +100,7 @@ router.put('/:id', async (req, res) => {
 // Delete a resume
 router.delete('/:userName/:id', async (req, res) => {
   try {
+    const pool = await getPool()
     const { userName, id } = req.params
     const [result] = await pool.execute(
       'DELETE FROM resumes WHERE id = ? AND user_name = ?',
