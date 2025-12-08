@@ -79,16 +79,19 @@ function App() {
     }
   }, [formData, step, userName])
 
-  // Load draft on mount
+  // Load draft on mount (silently, without popup)
   useEffect(() => {
     const savedDraft = localStorage.getItem('resumeDraft')
-    if (savedDraft && !formData.personalInfo.fullName) {
+    const draftLoaded = localStorage.getItem('draftLoaded')
+    
+    // Only load draft once per session, and only if user hasn't started filling
+    if (savedDraft && !draftLoaded && !formData.personalInfo.fullName) {
       try {
         const draft = JSON.parse(savedDraft)
         if (draft.isDraft) {
-          if (confirm('Found a saved draft. Would you like to load it?')) {
-            setFormData(draft)
-          }
+          // Auto-load draft silently without popup
+          setFormData(draft)
+          localStorage.setItem('draftLoaded', 'true')
         }
       } catch (e) {
         console.error('Error loading draft:', e)
