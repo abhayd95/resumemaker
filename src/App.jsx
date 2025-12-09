@@ -818,7 +818,8 @@ function App() {
         {step === 1 && (
           <MultiStepForm 
             initialData={formData} 
-            onSubmit={handleFormSubmit} 
+            onSubmit={handleFormSubmit}
+            onSectionReorder={() => setShowSectionReorder(true)}
           />
         )}
 

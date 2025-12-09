@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import AutocompleteInput from './AutocompleteInput'
 
-const MultiStepForm = ({ initialData, onSubmit }) => {
+const MultiStepForm = ({ initialData, onSubmit, onSectionReorder }) => {
   const [data, setData] = useState(initialData)
   const [currentStep, setCurrentStep] = useState(1)
   const [errors, setErrors] = useState({})
