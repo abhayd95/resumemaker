@@ -340,11 +340,13 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
           <div className="resume-wrapper" style={{ 
             minHeight: '297mm',
             width: '210mm',
+            height: 'auto',
             display: 'block',
             position: 'relative',
             background: 'white',
             padding: '1.5rem',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            overflow: 'visible'
           }}>
             <Template data={demo.data} colorTheme={colorTheme} />
           </div>

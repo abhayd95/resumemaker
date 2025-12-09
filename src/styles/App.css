@@ -1950,7 +1950,7 @@ body::before {
 }
 
 .demo-preview-mini {
-  height: 300px;
+  height: 350px;
   overflow: hidden;
   margin: 1rem 0;
   border: 2px solid #e8e8e8;
@@ -1970,15 +1970,15 @@ body::before {
 }
 
 .demo-preview-mini .demo-preview-wrapper {
-  transform: scale(0.3);
+  transform: scale(0.32);
   transform-origin: top center;
-  width: 333.33%;
-  height: 333.33%;
+  width: 312.5%;
+  height: 312.5%;
   overflow: visible;
   position: absolute;
   top: 0;
   left: 50%;
-  margin-left: -166.67%;
+  margin-left: -156.25%;
   pointer-events: none;
   will-change: transform;
   z-index: 1;
@@ -1995,7 +1995,8 @@ body::before {
   overflow: visible !important;
   width: 210mm !important;
   min-height: 297mm !important;
-  max-height: 297mm !important;
+  height: auto !important;
+  max-height: none !important;
   display: block !important;
   position: relative !important;
   padding: 1.5rem !important;
@@ -2042,6 +2043,38 @@ body::before {
   opacity: 1 !important;
 }
 
+/* Ensure all sections are fully displayed */
+.demo-preview-mini .resume-wrapper .resume-section,
+.demo-preview-mini .resume-wrapper .experience-item,
+.demo-preview-mini .resume-wrapper .education-item,
+.demo-preview-mini .resume-wrapper .project-item,
+.demo-preview-mini .resume-wrapper .skill-item,
+.demo-preview-mini .resume-wrapper .certification-item {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0.5rem 0 !important;
+  padding: 0.5rem 0 !important;
+}
+
+/* Ensure lists are visible */
+.demo-preview-mini .resume-wrapper ul,
+.demo-preview-mini .resume-wrapper ol {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  list-style: disc !important;
+  padding-left: 1.5rem !important;
+  margin: 0.5rem 0 !important;
+}
+
+.demo-preview-mini .resume-wrapper li {
+  display: list-item !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0.25rem 0 !important;
+}
+
 /* Preserve display types for flex and inline elements */
 .demo-preview-mini .resume-wrapper .contact-info,
 .demo-preview-mini .resume-wrapper .resume-header,
@@ -2067,8 +2100,30 @@ body::before {
   visibility: visible !important;
   opacity: 1 !important;
   color: #333 !important;
-  margin: 0.25rem 0 !important;
+  margin: 0.5rem 0 !important;
   padding: 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* Ensure section content is visible */
+.demo-preview-mini .resume-wrapper .section-content,
+.demo-preview-mini .resume-wrapper .item-description,
+.demo-preview-mini .resume-wrapper .section-title {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: inherit !important;
+}
+
+/* Ensure skills and tags are visible */
+.demo-preview-mini .resume-wrapper .skill-tag,
+.demo-preview-mini .resume-wrapper .skill-item,
+.demo-preview-mini .resume-wrapper .skills-list {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0.25rem !important;
+  padding: 0.25rem 0.5rem !important;
 }
 
 .demo-card-actions {
