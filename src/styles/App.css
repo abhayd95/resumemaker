@@ -2475,6 +2475,42 @@ body::before {
   -moz-osx-font-smoothing: grayscale !important;
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Ensure all data fields are visible */
+.demo-preview-mini .resume-wrapper .name,
+.demo-preview-mini .resume-wrapper .name-2,
+.demo-preview-mini .resume-wrapper .name-3,
+.demo-preview-mini .resume-wrapper .name-4,
+.demo-preview-mini .resume-wrapper .name-5,
+.demo-preview-mini .resume-wrapper .name-6,
+.demo-preview-mini .resume-wrapper .name-7 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #667eea !important;
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  margin: 0.5rem 0 !important;
+  line-height: 1.2 !important;
+}
+
+/* Ensure all contact information is visible */
+.demo-preview-mini .resume-wrapper .contact-info span,
+.demo-preview-mini .resume-wrapper .contact-info-2 span,
+.demo-preview-mini .resume-wrapper .contact-info-3 span,
+.demo-preview-mini .resume-wrapper .contact-info-4 span,
+.demo-preview-mini .resume-wrapper .contact-bar-5 span,
+.demo-preview-mini .resume-wrapper .contact-details span,
+.demo-preview-mini .resume-wrapper .contact-bar-3 span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #666 !important;
+  font-size: 0.9rem !important;
+  margin: 0.25rem 0.5rem !important;
+  white-space: nowrap !important;
 }
 
 /* Ensure dates are visible */
