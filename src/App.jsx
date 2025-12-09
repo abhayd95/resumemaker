@@ -712,31 +712,57 @@ function App() {
             className="job-match-dropdown"
             buttonClassName="btn-job-match"
           />
-          <button 
-            onClick={async () => {
-              if (!showSaveLoad) {
-                // Opening the panel
-                if (!userName) {
-                  const name = prompt('Please enter your name/username to view saved resumes:')
-                  if (!name || name.trim() === '') return
-                  const trimmedName = name.trim()
-                  setUserName(trimmedName)
-                  localStorage.setItem('resumeUserName', trimmedName)
-                  await loadSavedResumes(trimmedName)
-                } else {
-                  await loadSavedResumes(userName)
-                }
+          <DropdownButton
+            label={showSaveLoad ? '✕ Close' : '💾 Saved Resumes'}
+            options={[
+              { label: 'View All Resumes', icon: '📋', value: 'view' },
+              { label: 'Save Current Resume', icon: '💾', value: 'save', shortcut: 'Ctrl+S' },
+              { label: 'Import Resume', icon: '📥', value: 'import' },
+              { label: 'Export All', icon: '📤', value: 'exportAll' },
+              { label: 'Bulk Actions', icon: '⚡', value: 'bulk' }
+            ]}
+            onSelect={async (option) => {
+              switch(option.value) {
+                case 'view':
+                  if (!showSaveLoad) {
+                    if (!userName) {
+                      const name = prompt('Please enter your name/username to view saved resumes:')
+                      if (!name || name.trim() === '') return
+                      const trimmedName = name.trim()
+                      setUserName(trimmedName)
+                      localStorage.setItem('resumeUserName', trimmedName)
+                      await loadSavedResumes(trimmedName)
+                    } else {
+                      await loadSavedResumes(userName)
+                    }
+                  }
+                  setShowSaveLoad(!showSaveLoad)
+                  break
+                case 'save':
+                  if (step === 2 || step === 3) {
+                    handleSaveResume()
+                  } else {
+                    alert('Please complete your resume first to save')
+                  }
+                  break
+                case 'import':
+                  alert('Import feature: Please use "View All Resumes" to see saved resumes')
+                  break
+                case 'exportAll':
+                  if (savedResumes.length > 0) {
+                    alert(`Export all ${savedResumes.length} resumes feature coming soon!`)
+                  } else {
+                    alert('No saved resumes to export')
+                  }
+                  break
+                case 'bulk':
+                  setShowSaveLoad(true)
+                  break
               }
-              setShowSaveLoad(!showSaveLoad)
-            }} 
-            className="btn-save-load"
-            title="View and manage your saved resumes"
-          >
-            {showSaveLoad ? '✕ Close' : '💾 Saved Resumes'}
-            {savedResumes.length > 0 && (
-              <span className="resume-count-badge">{savedResumes.length}</span>
-            )}
-          </button>
+            }}
+            className="saved-resumes-dropdown"
+            buttonClassName="btn-save-load"
+          />
           {step === 1 && (
             <>
               <DropdownButton
