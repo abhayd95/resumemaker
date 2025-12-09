@@ -318,6 +318,139 @@ body::before {
   align-items: center;
   padding: 1rem;
   background: #f9f9f9;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.resume-item.selected {
+  background: #e8f0ff;
+  border: 2px solid #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.resume-checkbox {
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.bulk-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.save-load-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-bulk-toggle {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-bulk-toggle:hover {
+  background: #5568d3;
+  transform: scale(1.05);
+}
+
+.btn-bulk-toggle.active {
+  background: #4caf50;
+}
+
+.bulk-actions-bar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: white;
+}
+
+.bulk-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-select-all {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-select-all:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.bulk-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-bulk-export,
+.btn-bulk-template,
+.btn-bulk-delete {
+  background: white;
+  color: #667eea;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-bulk-export:hover,
+.btn-bulk-template:hover {
+  background: #f0f4ff;
+  transform: scale(1.05);
+}
+
+.btn-bulk-delete {
+  color: #dc3545;
+}
+
+.btn-bulk-delete:hover {
+  background: #ffe0e0;
+  transform: scale(1.05);
+}
+
+.btn-bulk-export:disabled,
+.btn-bulk-template:disabled,
+.btn-bulk-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
   border-radius: 8px;
   border: 1px solid #e0e0e0;
   transition: all 0.3s;
@@ -1282,19 +1415,88 @@ body::before {
   min-height: 297mm;
 }
 
-/* Print styles for PDF generation */
+/* Print Optimization - Enhanced Print Styles */
 @media print {
-  .resume-wrapper {
-    box-shadow: none;
-    padding: 1rem;
-    margin: 0;
-    max-width: 100%;
+  @page {
+    size: A4;
+    margin: 0.5in;
   }
   
-  .resume-wrapper * {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+  * {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
   }
+  
+  body {
+    background: white !important;
+  }
+  
+  .resume-wrapper {
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+  
+  .resume-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  .experience-item,
+  .education-item,
+  .project-item,
+  .certification-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Prevent page breaks in headers */
+  .resume-header {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  
+  .section-title {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  
+  /* Ensure proper spacing */
+  .resume-section {
+    margin-bottom: 1rem !important;
+  }
+}
+
+/* Print Mode Styling */
+.preview-container.print-mode .resume-wrapper {
+  box-shadow: 0 0 0 2px #667eea;
+  background: white;
+}
+
+.print-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-print-settings {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.btn-print-settings:hover {
+  background: #5a6268;
+  transform: scale(1.05);
 }
 
 .app-footer {
@@ -3384,14 +3586,19 @@ body::before {
   .preview-actions,
   .app-header,
   .app-footer,
-  .step-indicator {
+  .step-indicator,
+  .print-actions,
+  .btn-print,
+  .btn-print-settings {
     display: none !important;
   }
   
   .resume-wrapper {
-    box-shadow: none;
-    margin: 0;
-    padding: 0;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   .template-6 {
@@ -3400,6 +3607,17 @@ body::before {
 
   .template-7 .resume-top-7 {
     margin: 0;
+  }
+  
+  /* Page break optimization */
+  .resume-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
   }
 }
 

@@ -6,6 +6,8 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
   const [filterTemplate, setFilterTemplate] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
   const [analytics, setAnalytics] = useState({})
+  const [selectedResumes, setSelectedResumes] = useState(new Set())
+  const [bulkMode, setBulkMode] = useState(false)
 
   // Load analytics for all resumes
   useEffect(() => {
@@ -78,12 +80,116 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
     return 0
   })
 
+  // Bulk Actions Handlers
+  const handleSelectAll = () => {
+    if (selectedResumes.size === sortedResumes.length) {
+      setSelectedResumes(new Set())
+    } else {
+      setSelectedResumes(new Set(sortedResumes.map(r => r.id)))
+    }
+  }
+
+  const handleToggleSelect = (resumeId) => {
+    const newSelected = new Set(selectedResumes)
+    if (newSelected.has(resumeId)) {
+      newSelected.delete(resumeId)
+    } else {
+      newSelected.add(resumeId)
+    }
+    setSelectedResumes(newSelected)
+  }
+
+  const handleBulkDelete = () => {
+    if (selectedResumes.size === 0) {
+      alert('Please select at least one resume to delete.')
+      return
+    }
+    if (window.confirm(`Are you sure you want to delete ${selectedResumes.size} resume(s)?`)) {
+      selectedResumes.forEach(id => {
+        onDelete(id)
+      })
+      setSelectedResumes(new Set())
+      setBulkMode(false)
+    }
+  }
+
+  const handleBulkExport = async () => {
+    if (selectedResumes.size === 0) {
+      alert('Please select at least one resume to export.')
+      return
+    }
+    try {
+      const selectedResumeObjects = sortedResumes.filter(r => selectedResumes.has(r.id))
+      for (const resume of selectedResumeObjects) {
+        if (onDownload) {
+          await onDownload(resume)
+          // Small delay between downloads
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
+      }
+      alert(`Successfully exported ${selectedResumes.size} resume(s)!`)
+      setSelectedResumes(new Set())
+      setBulkMode(false)
+    } catch (error) {
+      alert('Error exporting resumes: ' + error.message)
+    }
+  }
+
+  const handleBulkTemplateChange = () => {
+    if (selectedResumes.size === 0) {
+      alert('Please select at least one resume.')
+      return
+    }
+    const newTemplate = prompt('Enter new template ID (1-7):')
+    if (newTemplate && parseInt(newTemplate) >= 1 && parseInt(newTemplate) <= 7) {
+      // This would require a new API endpoint for bulk template update
+      alert(`Bulk template change feature requires backend API. Selected ${selectedResumes.size} resume(s) for template ${newTemplate}`)
+      setSelectedResumes(new Set())
+      setBulkMode(false)
+    }
+  }
+
   return (
     <div className="save-load-panel">
       <div className="save-load-header">
         <h2>Saved Resumes ({sortedResumes.length})</h2>
-        <button onClick={onClose} className="btn-close">✕</button>
+        <div className="header-actions">
+          <button 
+            onClick={() => {
+              setBulkMode(!bulkMode)
+              setSelectedResumes(new Set())
+            }} 
+            className={`btn-bulk-toggle ${bulkMode ? 'active' : ''}`}
+            title="Bulk Actions Mode"
+          >
+            {bulkMode ? '✓ Bulk Mode' : '📦 Bulk Actions'}
+          </button>
+          <button onClick={onClose} className="btn-close">✕</button>
+        </div>
       </div>
+
+      {/* Bulk Actions Bar */}
+      {bulkMode && (
+        <div className="bulk-actions-bar">
+          <div className="bulk-info">
+            <span>{selectedResumes.size} selected</span>
+            <button onClick={handleSelectAll} className="btn-select-all">
+              {selectedResumes.size === sortedResumes.length ? 'Deselect All' : 'Select All'}
+            </button>
+          </div>
+          <div className="bulk-buttons">
+            <button onClick={handleBulkExport} className="btn-bulk-export" disabled={selectedResumes.size === 0}>
+              ⬇️ Export Selected ({selectedResumes.size})
+            </button>
+            <button onClick={handleBulkTemplateChange} className="btn-bulk-template" disabled={selectedResumes.size === 0}>
+              🎨 Change Template
+            </button>
+            <button onClick={handleBulkDelete} className="btn-bulk-delete" disabled={selectedResumes.size === 0}>
+              🗑️ Delete Selected ({selectedResumes.size})
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Search and Filter */}
       {resumes.length > 0 && (
@@ -150,7 +256,17 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
             }
             
             return (
-              <div key={resume.id} className="resume-item">
+              <div key={resume.id} className={`resume-item ${selectedResumes.has(resume.id) ? 'selected' : ''}`}>
+                {bulkMode && (
+                  <div className="resume-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={selectedResumes.has(resume.id)}
+                      onChange={() => handleToggleSelect(resume.id)}
+                      className="bulk-checkbox"
+                    />
+                  </div>
+                )}
                 <div className="resume-item-info">
                   <h3>{name}</h3>
                   <p className="resume-meta">

@@ -5,6 +5,7 @@ import TemplateSelectorWith1000 from './components/TemplateSelectorWith1000'
 import ResumePreview from './components/ResumePreview'
 import SaveLoadPanel from './components/SaveLoadPanel'
 import DemoResumeModal from './components/DemoResumeModal'
+import ResumeExamplesLibrary from './components/ResumeExamplesLibrary'
 import ThemeToggle from './components/ThemeToggle'
 import ResumeShareModal from './components/ResumeShareModal'
 import ATSChecker from './components/ATSChecker'
@@ -50,6 +51,7 @@ function App() {
   const [savedResumes, setSavedResumes] = useState([])
   const [showSaveLoad, setShowSaveLoad] = useState(false)
   const [showDemoModal, setShowDemoModal] = useState(false)
+  const [showExamplesLibrary, setShowExamplesLibrary] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showATSChecker, setShowATSChecker] = useState(false)
   const [selectedResumeForShare, setSelectedResumeForShare] = useState(null)
@@ -362,6 +364,13 @@ function App() {
     setShowDemoModal(false)
   }
 
+  const handleUseExample = (exampleData, exampleTemplate) => {
+    updateFormData(exampleData)
+    setSelectedTemplate(exampleTemplate)
+    setStep(1)
+    setShowExamplesLibrary(false)
+  }
+
   const handleViewResume = (resume) => {
     try {
       const resumeData = typeof resume.resume_data === 'string' 
@@ -652,6 +661,13 @@ function App() {
             }
             setStep(1)
           }}
+        />
+      )}
+
+      {showExamplesLibrary && (
+        <ResumeExamplesLibrary
+          onUseExample={handleUseExample}
+          onClose={() => setShowExamplesLibrary(false)}
         />
       )}
 

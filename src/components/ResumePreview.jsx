@@ -14,6 +14,7 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, 
   const resumeRef = useRef(null)
   const [showExportMenu, setShowExportMenu] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
+  const [printMode, setPrintMode] = useState(false)
   const exportMenuRef = useRef(null)
 
   // Close export menu when clicking outside
@@ -97,7 +98,50 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, 
   }
 
   const handlePrintPreview = () => {
-    window.print()
+    setPrintMode(true)
+    setTimeout(() => {
+      window.print()
+      setTimeout(() => setPrintMode(false), 100)
+    }, 100)
+  }
+
+  const handlePrintSettings = () => {
+    // Open print dialog with settings
+    const printWindow = window.open('', '_blank')
+    if (printWindow) {
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Print Resume - ${data.personalInfo?.fullName || 'Resume'}</title>
+            <style>
+              @page {
+                size: A4;
+                margin: 0.5in;
+              }
+              body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              }
+              .resume-wrapper {
+                width: 100%;
+                max-width: 100%;
+              }
+            </style>
+          </head>
+          <body>
+            ${resumeRef.current?.innerHTML || ''}
+          </body>
+        </html>
+      `)
+      printWindow.document.close()
+      printWindow.focus()
+      setTimeout(() => {
+        printWindow.print()
+        printWindow.close()
+      }, 250)
+    }
   }
 
   const renderTemplate = () => {
@@ -134,9 +178,14 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, 
               💾 Save
             </button>
           )}
-          <button onClick={handlePrintPreview} className="btn-print">
-            🖨️ Print Preview
-          </button>
+          <div className="print-actions" style={{ position: 'relative' }}>
+            <button onClick={handlePrintPreview} className="btn-print">
+              🖨️ Print
+            </button>
+            <button onClick={handlePrintSettings} className="btn-print-settings" title="Print with Settings">
+              ⚙️
+            </button>
+          </div>
           <div className="export-dropdown" style={{ position: 'relative' }} ref={exportMenuRef}>
             <button 
               onClick={() => setShowExportMenu(!showExportMenu)} 
@@ -168,7 +217,7 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, 
         </div>
       </div>
 
-      <div className="preview-container">
+      <div className={`preview-container ${printMode ? 'print-mode' : ''}`}>
         <div className="resume-wrapper" ref={resumeRef}>
           {renderTemplate()}
         </div>
