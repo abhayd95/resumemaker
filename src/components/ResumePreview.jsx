@@ -80,6 +80,29 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', customColor = nu
           const jsonContent = exportToJSON(data, templateId, coverLetterData)
           downloadFile(jsonContent, `${filename}.json`, 'application/json')
           break
+        case 'rtf':
+          // RTF export - simple text format
+          const rtfContent = `{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Times New Roman;}}\\f0\\fs24 ${exportToTXT(data).replace(/\n/g, '\\par ')}}`
+          downloadFile(rtfContent, `${filename}.rtf`, 'application/rtf')
+          break
+        case 'markdown':
+          // Markdown export
+          let mdContent = `# ${data.personalInfo?.fullName || 'Resume'}\n\n`
+          mdContent += `**Email:** ${data.personalInfo?.email || ''}\n`
+          mdContent += `**Phone:** ${data.personalInfo?.phone || ''}\n\n`
+          if (data.summary) {
+            mdContent += `## Professional Summary\n\n${data.summary}\n\n`
+          }
+          if (data.experience && data.experience.length > 0) {
+            mdContent += `## Work Experience\n\n`
+            data.experience.forEach(exp => {
+              mdContent += `### ${exp.position} at ${exp.company}\n`
+              mdContent += `${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}\n`
+              if (exp.description) mdContent += `${exp.description}\n\n`
+            })
+          }
+          downloadFile(mdContent, `${filename}.md`, 'text/markdown')
+          break
         default:
           break
       }
@@ -211,6 +234,12 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', customColor = nu
                 </button>
                 <button onClick={() => handleExport('json')} className="export-option">
                   💾 JSON (.json)
+                </button>
+                <button onClick={() => handleExport('rtf')} className="export-option">
+                  📄 RTF (.rtf)
+                </button>
+                <button onClick={() => handleExport('markdown')} className="export-option">
+                  📝 Markdown (.md)
                 </button>
               </div>
             )}

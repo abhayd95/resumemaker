@@ -7,6 +7,9 @@ import SaveLoadPanel from './components/SaveLoadPanel'
 import DemoResumeModal from './components/DemoResumeModal'
 import ResumeExamplesLibrary from './components/ResumeExamplesLibrary'
 import CustomizationPanel from './components/CustomizationPanel'
+import QuickActionsPanel from './components/QuickActionsPanel'
+import ResumeTipsPanel from './components/ResumeTipsPanel'
+import SectionReorder from './components/SectionReorder'
 import ThemeToggle from './components/ThemeToggle'
 import ResumeShareModal from './components/ResumeShareModal'
 import ATSChecker from './components/ATSChecker'
@@ -58,6 +61,22 @@ function App() {
   const [showDemoModal, setShowDemoModal] = useState(false)
   const [showExamplesLibrary, setShowExamplesLibrary] = useState(false)
   const [showCustomization, setShowCustomization] = useState(false)
+  const [showQuickActions, setShowQuickActions] = useState(false)
+  const [showResumeTips, setShowResumeTips] = useState(false)
+  const [showSectionReorder, setShowSectionReorder] = useState(false)
+  const [sectionOrder, setSectionOrder] = useState([
+    { id: 1, name: 'Personal Information', icon: '👤', key: 'personalInfo' },
+    { id: 2, name: 'Professional Summary', icon: '📝', key: 'summary' },
+    { id: 3, name: 'Work Experience', icon: '💼', key: 'experience' },
+    { id: 4, name: 'Education', icon: '🎓', key: 'education' },
+    { id: 5, name: 'Skills', icon: '🛠️', key: 'skills' },
+    { id: 6, name: 'Projects', icon: '🚀', key: 'projects' },
+    { id: 7, name: 'Languages', icon: '🌐', key: 'languages' },
+    { id: 8, name: 'Certifications', icon: '🏆', key: 'certifications' },
+    { id: 9, name: 'References', icon: '📞', key: 'references' },
+    { id: 10, name: 'Awards & Achievements', icon: '⭐', key: 'awards' },
+    { id: 11, name: 'Volunteer Work', icon: '🤝', key: 'volunteer' }
+  ])
   const [showShareModal, setShowShareModal] = useState(false)
   const [showATSChecker, setShowATSChecker] = useState(false)
   const [selectedResumeForShare, setSelectedResumeForShare] = useState(null)
@@ -538,6 +557,20 @@ function App() {
             📚 Resume Examples
           </button>
           <button 
+            onClick={() => setShowQuickActions(true)}
+            className="btn-quick-actions"
+            title="Quick Actions & Shortcuts"
+          >
+            ⚡ Quick Actions
+          </button>
+          <button 
+            onClick={() => setShowResumeTips(true)}
+            className="btn-tips"
+            title="Resume Tips & Guides"
+          >
+            💡 Tips
+          </button>
+          <button 
             onClick={async () => {
               if (!showSaveLoad) {
                 // Opening the panel
@@ -696,6 +729,73 @@ function App() {
         />
       )}
 
+      {showCustomization && step === 3 && (
+        <CustomizationPanel
+          colorTheme={colorTheme}
+          onColorThemeChange={setColorTheme}
+          customColor={customColor}
+          onCustomColorChange={setCustomColor}
+          selectedFont={selectedFont}
+          onFontChange={setSelectedFont}
+          fontSize={fontSize}
+          onFontSizeChange={setFontSize}
+          previewMode={previewMode}
+          onPreviewModeChange={setPreviewMode}
+          onClose={() => setShowCustomization(false)}
+        />
+      )}
+
+      {showQuickActions && (
+        <QuickActionsPanel
+          onSave={() => {
+            if (step === 3) handleSaveResume()
+            else if (step === 2) setStep(3)
+          }}
+          onDownload={() => {
+            if (step === 3) {
+              const downloadBtn = document.querySelector('.btn-primary')
+              if (downloadBtn) downloadBtn.click()
+            }
+          }}
+          onShare={() => {
+            if (step === 3 && currentResumeId) {
+              const resume = savedResumes.find(r => r.id === currentResumeId)
+              if (resume) {
+                setSelectedResumeForShare(resume)
+                setShowShareModal(true)
+              }
+            }
+          }}
+          onATSCheck={() => setShowATSChecker(true)}
+          onCoverLetter={() => setShowCoverLetter(true)}
+          onExamples={() => setShowExamplesLibrary(true)}
+          onCustomize={() => {
+            if (step === 3) {
+              setShowCustomization(true)
+            }
+          }}
+          onClose={() => setShowQuickActions(false)}
+        />
+      )}
+
+      {showResumeTips && (
+        <ResumeTipsPanel
+          currentSection={step}
+          onClose={() => setShowResumeTips(false)}
+        />
+      )}
+
+      {showSectionReorder && (
+        <SectionReorder
+          sections={sectionOrder}
+          onReorder={(newOrder) => {
+            setSectionOrder(newOrder)
+            localStorage.setItem('resumeSectionOrder', JSON.stringify(newOrder))
+          }}
+          onClose={() => setShowSectionReorder(false)}
+        />
+      )}
+
       {/* Step Progress Indicator */}
       <div className="step-indicator">
         <div className={`step ${step >= 1 ? 'active' : ''} ${step > 1 ? 'completed' : ''}`}>
@@ -745,12 +845,7 @@ function App() {
             onSave={handleSaveResume}
             coverLetterData={coverLetterData}
             userName={userName}
-            resumeId={currentResumeId} 
-            data={formData}
-            templateId={selectedTemplate}
-            colorTheme={colorTheme}
-            onBack={handleBack}
-            onSave={handleSaveResume}
+            resumeId={currentResumeId}
           />
         )}
       </div>
