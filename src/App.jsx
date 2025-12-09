@@ -15,6 +15,9 @@ import EmailIntegration from './components/EmailIntegration'
 import JobMatchScore from './components/JobMatchScore'
 import GrammarSpellCheck from './components/GrammarSpellCheck'
 import BackupSync from './components/BackupSync'
+import AIResumeAssistant from './components/AIResumeAssistant'
+import ResumeComparison from './components/ResumeComparison'
+import PortfolioIntegration from './components/PortfolioIntegration'
 import ThemeToggle from './components/ThemeToggle'
 import { registerServiceWorker } from './utils/serviceWorker'
 import ResumeShareModal from './components/ResumeShareModal'
@@ -75,6 +78,9 @@ function App() {
   const [showJobMatchScore, setShowJobMatchScore] = useState(false)
   const [showGrammarCheck, setShowGrammarCheck] = useState(false)
   const [showBackupSync, setShowBackupSync] = useState(false)
+  const [showAIAssistant, setShowAIAssistant] = useState(false)
+  const [showResumeComparison, setShowResumeComparison] = useState(false)
+  const [showPortfolio, setShowPortfolio] = useState(false)
   const [sectionOrder, setSectionOrder] = useState([
     { id: 1, name: 'Personal Information', icon: '👤', key: 'personalInfo' },
     { id: 2, name: 'Professional Summary', icon: '📝', key: 'summary' },
@@ -567,12 +573,20 @@ function App() {
         if (showDemoModal) setShowDemoModal(false)
         if (showCoverLetter) setShowCoverLetter(false)
         if (showVersionHistory) setShowVersionHistory(false)
+        if (showGrammarCheck) setShowGrammarCheck(false)
+        if (showBackupSync) setShowBackupSync(false)
+        if (showAIAssistant) setShowAIAssistant(false)
+        if (showResumeComparison) setShowResumeComparison(false)
+        if (showPortfolio) setShowPortfolio(false)
+        if (showLinkedInImport) setShowLinkedInImport(false)
+        if (showEmailIntegration) setShowEmailIntegration(false)
+        if (showJobMatchScore) setShowJobMatchScore(false)
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal, showCoverLetter, showVersionHistory, historyIndex, history, showGrammarCheck, showBackupSync, showLinkedInImport, showEmailIntegration, showJobMatchScore])
+  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal, showCoverLetter, showVersionHistory, historyIndex, history, showGrammarCheck, showBackupSync, showLinkedInImport, showEmailIntegration, showJobMatchScore, showAIAssistant, showResumeComparison, showPortfolio, savedResumes])
 
   return (
     <div className="app">
@@ -666,6 +680,29 @@ function App() {
                 title="Backup & Sync Resume"
               >
                 ☁️ Backup & Sync
+              </button>
+              <button 
+                onClick={() => setShowAIAssistant(true)} 
+                className="btn-ai-assistant"
+                title="AI Resume Writing Assistant"
+              >
+                🤖 AI Assistant
+              </button>
+              {savedResumes.length >= 2 && (
+                <button 
+                  onClick={() => setShowResumeComparison(true)} 
+                  className="btn-compare"
+                  title="Compare Resumes"
+                >
+                  📊 Compare
+                </button>
+              )}
+              <button 
+                onClick={() => setShowPortfolio(true)} 
+                className="btn-portfolio"
+                title="Portfolio Integration"
+              >
+                🎨 Portfolio
               </button>
               <button 
                 onClick={() => setShowCoverLetter(true)} 
@@ -897,6 +934,36 @@ function App() {
             setFormData(restoredData)
             setShowBackupSync(false)
           }}
+        />
+      )}
+
+      {showAIAssistant && (
+        <AIResumeAssistant
+          resumeData={formData}
+          onApplySuggestion={(section, suggestion) => {
+            if (section === 'summary') {
+              setFormData({ ...formData, summary: suggestion })
+            }
+            // Handle other sections
+          }}
+          onClose={() => setShowAIAssistant(false)}
+        />
+      )}
+
+      {showResumeComparison && (
+        <ResumeComparison
+          savedResumes={savedResumes}
+          onClose={() => setShowResumeComparison(false)}
+        />
+      )}
+
+      {showPortfolio && (
+        <PortfolioIntegration
+          resumeData={formData}
+          onUpdate={(updatedData) => {
+            setFormData(updatedData)
+          }}
+          onClose={() => setShowPortfolio(false)}
         />
       )}
 

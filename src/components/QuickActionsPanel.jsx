@@ -13,6 +13,9 @@ const QuickActionsPanel = ({
   onLinkedInImport,
   onEmailIntegration,
   onJobMatch,
+  onAIAssistant,
+  onCompare,
+  onPortfolio,
   onClose 
 }) => {
   const quickActions = [
@@ -111,6 +114,30 @@ const QuickActionsPanel = ({
       action: onCustomize,
       shortcut: 'Ctrl+C',
       color: '#9f7aea'
+    },
+    {
+      id: 'ai',
+      name: 'AI Assistant',
+      icon: '🤖',
+      action: onAIAssistant,
+      shortcut: 'Ctrl+A',
+      color: '#9333ea'
+    },
+    {
+      id: 'compare',
+      name: 'Compare',
+      icon: '📊',
+      action: onCompare,
+      shortcut: 'Ctrl+Shift+C',
+      color: '#06b6d4'
+    },
+    {
+      id: 'portfolio',
+      name: 'Portfolio',
+      icon: '🎨',
+      action: onPortfolio,
+      shortcut: 'Ctrl+P',
+      color: '#ec4899'
     }
   ]
 
