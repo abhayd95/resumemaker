@@ -520,6 +520,24 @@ function App() {
     setShowShareModal(true)
   }
 
+  const handleLinkedInImport = (importedData) => {
+    if (importedData) {
+      updateFormData({
+        ...formData,
+        personalInfo: {
+          ...formData.personalInfo,
+          ...importedData.personalInfo
+        },
+        summary: importedData.summary || formData.summary,
+        experiences: importedData.experiences || formData.experiences,
+        education: importedData.education || formData.education,
+        skills: importedData.skills || formData.skills,
+        projects: importedData.projects || formData.projects
+      })
+      alert('LinkedIn data imported successfully!')
+    }
+  }
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
