@@ -4658,20 +4658,20 @@ body::before {
 
 /* Section Reorder Button */
 .btn-reorder-sections {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+  margin-left: auto;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.3s;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  z-index: 10;
+  white-space: nowrap;
+  align-self: center;
+  flex-shrink: 0;
 }
 
 .btn-reorder-sections:hover {

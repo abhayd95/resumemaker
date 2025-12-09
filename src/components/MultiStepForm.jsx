@@ -1290,15 +1290,6 @@ const MultiStepForm = ({ initialData, onSubmit, onSectionReorder }) => {
     <div className="multi-step-form">
       {/* Step Progress Bar */}
       <div className="step-progress-container">
-        {onSectionReorder && (
-          <button 
-            onClick={() => onSectionReorder()}
-            className="btn-reorder-sections"
-            title="Reorder Sections"
-          >
-            🔄 Reorder Sections
-          </button>
-        )}
         <div className="step-progress-bar">
           {steps.map((step, index) => (
             <div key={step.id} className="step-progress-item">
@@ -1313,6 +1304,15 @@ const MultiStepForm = ({ initialData, onSubmit, onSectionReorder }) => {
               )}
             </div>
           ))}
+          {onSectionReorder && (
+            <button 
+              onClick={() => onSectionReorder()}
+              className="btn-reorder-sections"
+              title="Reorder Sections"
+            >
+              🔄 Reorder Sections
+            </button>
+          )}
         </div>
         <div className="step-names-mobile">
           <div className="current-step-name">
