@@ -2129,6 +2129,7 @@ body::before {
   list-style: disc !important;
   padding-left: 1.5rem !important;
   margin: 0.5rem 0 !important;
+  width: 100% !important;
 }
 
 .demo-preview-mini .resume-wrapper li {
@@ -2136,6 +2137,49 @@ body::before {
   visibility: visible !important;
   opacity: 1 !important;
   margin: 0.25rem 0 !important;
+  color: #333 !important;
+}
+
+/* Ensure languages list is visible */
+.demo-preview-mini .resume-wrapper .languages-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0.5rem 0 !important;
+  width: 100% !important;
+}
+
+.demo-preview-mini .resume-wrapper .language-item {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0.25rem !important;
+  padding: 0.25rem 0.5rem !important;
+  background: rgba(102, 126, 234, 0.1) !important;
+  border-radius: 4px !important;
+  color: #667eea !important;
+}
+
+/* Ensure projects are fully visible */
+.demo-preview-mini .resume-wrapper .project-item {
+  margin: 1rem 0 !important;
+  padding: 0.75rem 0 !important;
+  border-left: 3px solid #667eea !important;
+  padding-left: 1rem !important;
+}
+
+.demo-preview-mini .resume-wrapper .project-link {
+  color: #667eea !important;
+  text-decoration: none !important;
+  margin-left: 0.5rem !important;
+}
+
+.demo-preview-mini .resume-wrapper .technologies {
+  color: #666 !important;
+  font-size: 0.9em !important;
+  margin-top: 0.25rem !important;
 }
 
 /* Preserve display types for flex and inline elements */

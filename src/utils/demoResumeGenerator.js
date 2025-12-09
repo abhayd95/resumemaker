@@ -68,20 +68,31 @@ const generateDemoResume = (id) => {
       company: company,
       position: jobTitle,
       startDate: `${2020 + (id % 4)}-01`,
-      endDate: `${2024 + (id % 2)}-12`,
+      endDate: id % 2 === 0 ? 'Present' : `${2024 + (id % 2)}-12`,
       current: id % 2 === 0,
-      description: `Led development of multiple projects using ${skillSet.slice(0, 3).join(', ')}. Collaborated with cross-functional teams to deliver high-quality solutions.`
+      description: `Led development of multiple projects using ${skillSet.slice(0, 3).join(', ')}. Collaborated with cross-functional teams to deliver high-quality solutions. Implemented best practices and improved system performance by 40%.`
     }
   ]
   
-  if (id % 3 === 0) {
+  // Always add at least 2 experiences for more complete resume
+  experiences.push({
+    company: companies[(id + 1) % companies.length],
+    position: id % 3 === 0 ? 'Junior ' + jobTitle : 'Associate ' + jobTitle,
+    startDate: `${2018 + (id % 3)}-06`,
+    endDate: `${2020 + (id % 4)}-01`,
+    current: false,
+    description: `Developed and maintained web applications using ${skillSet[0]} and ${skillSet[1]}. Worked on bug fixes, feature implementations, and code reviews. Contributed to team productivity improvements.`
+  })
+  
+  // Add third experience for some resumes
+  if (id % 4 === 0) {
     experiences.push({
-      company: companies[(id + 1) % companies.length],
-      position: 'Junior ' + jobTitle,
-      startDate: `${2018 + (id % 3)}-06`,
-      endDate: `${2020 + (id % 4)}-01`,
+      company: companies[(id + 2) % companies.length],
+      position: 'Intern ' + jobTitle,
+      startDate: `${2017 + (id % 2)}-01`,
+      endDate: `${2018 + (id % 2)}-06`,
       current: false,
-      description: `Developed and maintained web applications. Worked on bug fixes and feature implementations.`
+      description: `Assisted senior developers in building features. Learned industry best practices and gained hands-on experience.`
     })
   }
   
@@ -99,25 +110,59 @@ const generateDemoResume = (id) => {
   const projects = [
     {
       name: `${jobTitle} Portfolio Project`,
-      description: `Built a comprehensive portfolio showcasing ${skillSet[0]} and ${skillSet[1]} skills.`,
+      description: `Built a comprehensive portfolio showcasing ${skillSet[0]} and ${skillSet[1]} skills. Implemented responsive design and optimized performance.`,
       technologies: skillSet.slice(0, 3).join(', '),
       link: website
+    },
+    {
+      name: `${skillSet[0]} Application`,
+      description: `Developed a full-stack application using ${skillSet.slice(0, 2).join(' and ')}. Features include user authentication, data visualization, and real-time updates.`,
+      technologies: skillSet.slice(0, 4).join(', '),
+      link: github
     }
   ]
+  
+  // Add third project for some resumes
+  if (id % 3 === 0) {
+    projects.push({
+      name: `Open Source Contribution`,
+      description: `Contributed to open-source projects. Fixed bugs and added new features.`,
+      technologies: skillSet.slice(0, 2).join(', '),
+      link: github
+    })
+  }
   
   const languages = [
     { name: 'English', proficiency: 'Native' },
     { name: ['Spanish', 'French', 'German', 'Chinese', 'Japanese'][id % 5], proficiency: ['Advanced', 'Intermediate'][id % 2] }
   ]
   
-  const certifications = id % 2 === 0 ? [
+  // Add third language for some resumes
+  if (id % 4 === 0) {
+    languages.push({
+      name: ['Portuguese', 'Italian', 'Russian', 'Arabic', 'Korean'][id % 5],
+      proficiency: 'Basic'
+    })
+  }
+  
+  const certifications = [
     {
-      name: `${skillSet[0]} Certification`,
+      name: `${skillSet[0]} Professional Certification`,
       organization: 'Professional Certification Board',
       date: `${2022 + (id % 2)}-06`,
       credentialId: `CERT-${id}`
     }
-  ] : []
+  ]
+  
+  // Add second certification for some resumes
+  if (id % 3 === 0) {
+    certifications.push({
+      name: `${skillSet[1]} Advanced Certification`,
+      organization: 'Tech Certification Institute',
+      date: `${2023 + (id % 2)}-03`,
+      credentialId: `CERT-ADV-${id}`
+    })
+  }
   
   return {
     id: id + 1,
