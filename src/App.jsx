@@ -545,12 +545,6 @@ function App() {
         </div>
         <div className="header-actions">
           <button 
-            onClick={() => setShowDemoModal(true)} 
-            className="btn-demo"
-          >
-            📋 View Demo Resumes
-          </button>
-          <button 
             onClick={() => setShowExamplesLibrary(true)}
             className="btn-examples"
           >
