@@ -1950,7 +1950,7 @@ body::before {
 }
 
 .demo-preview-mini {
-  height: 350px;
+  height: 400px;
   overflow: hidden;
   margin: 1rem 0;
   border: 2px solid #e8e8e8;
@@ -1970,15 +1970,15 @@ body::before {
 }
 
 .demo-preview-mini .demo-preview-wrapper {
-  transform: scale(0.32);
+  transform: scale(0.28);
   transform-origin: top center;
-  width: 312.5%;
-  height: 312.5%;
+  width: 357.14%;
+  height: 357.14%;
   overflow: visible;
   position: absolute;
-  top: 0;
+  top: -10px;
   left: 50%;
-  margin-left: -156.25%;
+  margin-left: -178.57%;
   pointer-events: none;
   will-change: transform;
   z-index: 1;
@@ -1995,8 +1995,8 @@ body::before {
   overflow: visible !important;
   width: 210mm !important;
   min-height: 297mm !important;
-  height: auto !important;
-  max-height: none !important;
+  height: 297mm !important;
+  max-height: 297mm !important;
   display: block !important;
   position: relative !important;
   padding: 1.5rem !important;
@@ -2014,10 +2014,11 @@ body::before {
   visibility: visible !important;
   opacity: 1 !important;
   width: 100% !important;
-  height: auto !important;
-  min-height: auto !important;
+  height: 100% !important;
+  min-height: 100% !important;
   position: relative !important;
   transform: none !important;
+  overflow: visible !important;
 }
 
 /* Ensure all template classes are visible */
@@ -2032,9 +2033,10 @@ body::before {
   visibility: visible !important;
   opacity: 1 !important;
   width: 100% !important;
-  height: auto !important;
-  min-height: auto !important;
+  height: 100% !important;
+  min-height: 100% !important;
   position: relative !important;
+  overflow: visible !important;
 }
 
 /* Ensure all content elements are visible */
@@ -2055,6 +2057,20 @@ body::before {
   opacity: 1 !important;
   margin: 0.5rem 0 !important;
   padding: 0.5rem 0 !important;
+  width: 100% !important;
+}
+
+/* Ensure header is visible */
+.demo-preview-mini .resume-wrapper .resume-header,
+.demo-preview-mini .resume-wrapper .resume-header-4,
+.demo-preview-mini .resume-wrapper .resume-header-5,
+.demo-preview-mini .resume-wrapper .resume-top-7,
+.demo-preview-mini .resume-wrapper .resume-sidebar-6 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  margin-bottom: 1rem !important;
 }
 
 /* Ensure lists are visible */

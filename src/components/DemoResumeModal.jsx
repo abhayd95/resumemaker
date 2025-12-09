@@ -339,8 +339,8 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
         <div className="demo-preview-wrapper">
           <div className="resume-wrapper" style={{ 
             minHeight: '297mm',
+            height: '297mm',
             width: '210mm',
-            height: 'auto',
             display: 'block',
             position: 'relative',
             background: 'white',
