@@ -1972,20 +1972,20 @@ body::before {
 }
 
 .demo-preview-mini .demo-preview-wrapper {
-  transform: scale(0.25);
+  transform: scale(0.28);
   transform-origin: top center;
-  width: 400%;
-  height: 400%;
+  width: 357.14%;
+  height: 357.14%;
   overflow: visible;
   position: absolute;
   top: 0;
   left: 50%;
-  margin-left: -200%;
+  margin-left: -178.57%;
   pointer-events: none;
   will-change: transform;
   z-index: 1;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
 }
 
 .demo-preview-mini .resume-wrapper {
@@ -1995,24 +1995,28 @@ body::before {
   overflow: visible !important;
   width: 210mm !important;
   min-height: 297mm !important;
+  max-height: 297mm !important;
   display: block !important;
   position: relative;
   padding: 1.5rem !important;
   box-sizing: border-box;
   margin: 0 auto;
+  transform: none !important;
 }
 
 /* Force visibility of all template content */
-.demo-preview-mini .resume-wrapper *,
-.demo-preview-mini .resume-wrapper *::before,
-.demo-preview-mini .resume-wrapper *::after {
+.demo-preview-mini .resume-wrapper .resume-template {
+  display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  display: block !important;
-  color: inherit !important;
-  background: inherit !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: auto !important;
+  position: relative !important;
+  transform: none !important;
 }
 
+/* Ensure all template classes are visible */
 .demo-preview-mini .resume-wrapper .template-1,
 .demo-preview-mini .resume-wrapper .template-2,
 .demo-preview-mini .resume-wrapper .template-3,
@@ -2026,6 +2030,26 @@ body::before {
   width: 100% !important;
   height: auto !important;
   min-height: auto !important;
+  position: relative !important;
+}
+
+/* Ensure all content elements are visible */
+.demo-preview-mini .resume-wrapper * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Preserve display types for flex and inline elements */
+.demo-preview-mini .resume-wrapper .contact-info,
+.demo-preview-mini .resume-wrapper .resume-header,
+.demo-preview-mini .resume-wrapper .resume-section,
+.demo-preview-mini .resume-wrapper .item-header {
+  display: flex !important;
+}
+
+.demo-preview-mini .resume-wrapper span,
+.demo-preview-mini .resume-wrapper a {
+  display: inline-block !important;
 }
 
 /* Ensure text is readable */
@@ -2034,12 +2058,14 @@ body::before {
 .demo-preview-mini .resume-wrapper h2,
 .demo-preview-mini .resume-wrapper h3,
 .demo-preview-mini .resume-wrapper h4,
-.demo-preview-mini .resume-wrapper span,
-.demo-preview-mini .resume-wrapper div {
+.demo-preview-mini .resume-wrapper h5,
+.demo-preview-mini .resume-wrapper h6 {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   color: #333 !important;
+  margin: 0.25rem 0 !important;
+  padding: 0 !important;
 }
 
 .demo-card-actions {
