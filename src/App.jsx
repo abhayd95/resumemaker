@@ -586,7 +586,7 @@ function App() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal, showCoverLetter, showVersionHistory, historyIndex, history, showGrammarCheck, showBackupSync, showLinkedInImport, showEmailIntegration, showJobMatchScore, showAIAssistant, showResumeComparison, showPortfolio, savedResumes])
+  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal, showCoverLetter, showVersionHistory, historyIndex, history, showGrammarCheck, showBackupSync, showLinkedInImport, showEmailIntegration, showJobMatchScore, showAIAssistant, showResumeComparison, showPortfolio, savedResumes, showQuickActions, showCustomization, showExamplesLibrary, showResumeTips, showSectionReorder])
 
   return (
     <div className="app">
@@ -874,6 +874,20 @@ function App() {
               setShowCustomization(true)
             }
           }}
+          onGrammarCheck={() => setShowGrammarCheck(true)}
+          onBackupSync={() => setShowBackupSync(true)}
+          onLinkedInImport={() => setShowLinkedInImport(true)}
+          onEmailIntegration={() => {
+            if (step === 3) setShowEmailIntegration(true)
+            else alert('Please complete your resume first to send via email')
+          }}
+          onJobMatch={() => setShowJobMatchScore(true)}
+          onAIAssistant={() => setShowAIAssistant(true)}
+          onCompare={() => {
+            if (savedResumes.length >= 2) setShowResumeComparison(true)
+            else alert('You need at least 2 saved resumes to compare')
+          }}
+          onPortfolio={() => setShowPortfolio(true)}
           onClose={() => setShowQuickActions(false)}
         />
       )}
