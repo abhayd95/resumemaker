@@ -164,6 +164,51 @@ const generateDemoResume = (id) => {
     })
   }
   
+  // Generate References
+  const references = []
+  if (id % 2 === 0) {
+    references.push({
+      name: `Dr. ${firstNames[(id + 1) % firstNames.length]} ${lastNames[(id + 2) % lastNames.length]}`,
+      position: 'Senior Manager',
+      company: companies[(id + 1) % companies.length],
+      email: `ref${id}@example.com`,
+      phone: `+1 (555) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+      relationship: 'Former Manager'
+    })
+  }
+  
+  // Generate Awards
+  const awards = []
+  if (id % 3 === 0) {
+    awards.push({
+      title: 'Employee of the Year',
+      organization: companies[id % companies.length],
+      date: `${2022 + (id % 2)}-12`,
+      description: 'Recognized for outstanding performance and contribution to the team'
+    })
+  }
+  if (id % 5 === 0) {
+    awards.push({
+      title: 'Best Project Award',
+      organization: 'Tech Innovation Summit',
+      date: `${2023 + (id % 2)}-06`,
+      description: 'Awarded for innovative project implementation'
+    })
+  }
+  
+  // Generate Volunteer Work
+  const volunteer = []
+  if (id % 4 === 0) {
+    volunteer.push({
+      organization: 'Local Community Center',
+      position: 'Volunteer Coordinator',
+      startDate: `${2021 + (id % 2)}-01`,
+      endDate: id % 8 === 0 ? '' : `${2023 + (id % 2)}-12`,
+      current: id % 8 === 0,
+      description: 'Organized community events and managed volunteer programs'
+    })
+  }
+  
   return {
     id: id + 1,
     name: `${jobTitle} - ${fullName}`,
@@ -188,7 +233,10 @@ const generateDemoResume = (id) => {
       skills: skillSet,
       projects: projects,
       languages: languages,
-      certifications: certifications
+      certifications: certifications,
+      references: references,
+      awards: awards,
+      volunteer: volunteer
     }
   }
 }

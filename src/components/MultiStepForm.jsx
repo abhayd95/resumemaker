@@ -6,7 +6,7 @@ const MultiStepForm = ({ initialData, onSubmit }) => {
   const [currentStep, setCurrentStep] = useState(1)
   const [errors, setErrors] = useState({})
 
-  const totalSteps = 8
+  const totalSteps = 11
   const steps = [
     { id: 1, name: 'Personal Information', icon: '👤' },
     { id: 2, name: 'Professional Summary', icon: '📝' },
@@ -15,7 +15,10 @@ const MultiStepForm = ({ initialData, onSubmit }) => {
     { id: 5, name: 'Skills', icon: '🛠️' },
     { id: 6, name: 'Projects', icon: '🚀' },
     { id: 7, name: 'Languages', icon: '🌐' },
-    { id: 8, name: 'Certifications', icon: '🏆' }
+    { id: 8, name: 'Certifications', icon: '🏆' },
+    { id: 9, name: 'References', icon: '📞' },
+    { id: 10, name: 'Awards & Achievements', icon: '⭐' },
+    { id: 11, name: 'Volunteer Work', icon: '🤝' }
   ]
 
   const updatePersonalInfo = (field, value) => {
@@ -308,6 +311,123 @@ const MultiStepForm = ({ initialData, onSubmit }) => {
       newDate = `${year}-${value}`
     }
     updateCertification(index, 'date', newDate)
+  }
+
+  // References functions
+  const addReference = () => {
+    setData(prev => ({
+      ...prev,
+      references: [...(prev.references || []), {
+        name: '',
+        position: '',
+        company: '',
+        email: '',
+        phone: '',
+        relationship: ''
+      }]
+    }))
+  }
+
+  const updateReference = (index, field, value) => {
+    setData(prev => ({
+      ...prev,
+      references: (prev.references || []).map((ref, i) => 
+        i === index ? { ...ref, [field]: value } : ref
+      )
+    }))
+  }
+
+  const removeReference = (index) => {
+    setData(prev => ({
+      ...prev,
+      references: (prev.references || []).filter((_, i) => i !== index)
+    }))
+  }
+
+  // Awards functions
+  const addAward = () => {
+    setData(prev => ({
+      ...prev,
+      awards: [...(prev.awards || []), {
+        title: '',
+        organization: '',
+        date: '',
+        description: ''
+      }]
+    }))
+  }
+
+  const updateAward = (index, field, value) => {
+    setData(prev => ({
+      ...prev,
+      awards: (prev.awards || []).map((award, i) => 
+        i === index ? { ...award, [field]: value } : award
+      )
+    }))
+  }
+
+  const removeAward = (index) => {
+    setData(prev => ({
+      ...prev,
+      awards: (prev.awards || []).filter((_, i) => i !== index)
+    }))
+  }
+
+  const handleAwardDateChange = (index, type, value) => {
+    const currentDate = (data.awards || [])[index]?.date || ''
+    let newDate = currentDate
+    if (type === 'year') {
+      const month = currentDate.split('-')[1] || '01'
+      newDate = `${value}-${month}`
+    } else if (type === 'month') {
+      const year = currentDate.split('-')[0] || new Date().getFullYear()
+      newDate = `${year}-${value}`
+    }
+    updateAward(index, 'date', newDate)
+  }
+
+  // Volunteer functions
+  const addVolunteer = () => {
+    setData(prev => ({
+      ...prev,
+      volunteer: [...(prev.volunteer || []), {
+        organization: '',
+        position: '',
+        startDate: '',
+        endDate: '',
+        current: false,
+        description: ''
+      }]
+    }))
+  }
+
+  const updateVolunteer = (index, field, value) => {
+    setData(prev => ({
+      ...prev,
+      volunteer: (prev.volunteer || []).map((vol, i) => 
+        i === index ? { ...vol, [field]: value } : vol
+      )
+    }))
+  }
+
+  const removeVolunteer = (index) => {
+    setData(prev => ({
+      ...prev,
+      volunteer: (prev.volunteer || []).filter((_, i) => i !== index)
+    }))
+  }
+
+  const handleVolunteerDateChange = (index, field, type, value) => {
+    const currentDate = (data.volunteer || [])[index]?.[field] || ''
+    let newDate = currentDate
+    if (type === 'year') {
+      const month = currentDate.split('-')[1] || '01'
+      newDate = `${value}-${month}`
+    } else if (type === 'month') {
+      const year = currentDate.split('-')[0] || new Date().getFullYear()
+      newDate = `${year}-${value}`
+    }
+    updateVolunteer(index, field, newDate)
   }
 
   const renderStepContent = () => {
@@ -894,6 +1014,269 @@ const MultiStepForm = ({ initialData, onSubmit }) => {
             ))}
             <button type="button" onClick={addCertification} className="btn-add">
               + Add Certification
+            </button>
+          </div>
+        )
+
+      case 9:
+        return (
+          <div className="step-content">
+            <div className="step-header">
+              <h2>📞 References</h2>
+              <p>Add professional references (optional)</p>
+            </div>
+            {(data.references || []).map((ref, index) => (
+              <div key={index} className="form-item-group">
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Name *</label>
+                    <input
+                      type="text"
+                      value={ref.name}
+                      onChange={(e) => updateReference(index, 'name', e.target.value)}
+                      placeholder="Reference name"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Position</label>
+                    <input
+                      type="text"
+                      value={ref.position}
+                      onChange={(e) => updateReference(index, 'position', e.target.value)}
+                      placeholder="e.g., Senior Manager"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Company</label>
+                    <input
+                      type="text"
+                      value={ref.company}
+                      onChange={(e) => updateReference(index, 'company', e.target.value)}
+                      placeholder="Company name"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      value={ref.email}
+                      onChange={(e) => updateReference(index, 'email', e.target.value)}
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone</label>
+                    <input
+                      type="tel"
+                      value={ref.phone}
+                      onChange={(e) => updateReference(index, 'phone', e.target.value)}
+                      placeholder="+1 234 567 8900"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Relationship</label>
+                    <input
+                      type="text"
+                      value={ref.relationship}
+                      onChange={(e) => updateReference(index, 'relationship', e.target.value)}
+                      placeholder="e.g., Former Manager, Colleague"
+                    />
+                  </div>
+                </div>
+                <button type="button" onClick={() => removeReference(index)} className="btn-remove">
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button type="button" onClick={addReference} className="btn-add">
+              + Add Reference
+            </button>
+          </div>
+        )
+
+      case 10:
+        return (
+          <div className="step-content">
+            <div className="step-header">
+              <h2>⭐ Awards & Achievements</h2>
+              <p>Showcase your accomplishments</p>
+            </div>
+            {(data.awards || []).map((award, index) => (
+              <div key={index} className="form-item-group">
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Award Title *</label>
+                    <input
+                      type="text"
+                      value={award.title}
+                      onChange={(e) => updateAward(index, 'title', e.target.value)}
+                      placeholder="e.g., Employee of the Year"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Organization</label>
+                    <input
+                      type="text"
+                      value={award.organization}
+                      onChange={(e) => updateAward(index, 'organization', e.target.value)}
+                      placeholder="Issuing organization"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Date</label>
+                    <div className="date-selector">
+                      <select
+                        value={award.date ? award.date.split('-')[0] : ''}
+                        onChange={(e) => handleAwardDateChange(index, 'year', e.target.value)}
+                        className="date-year"
+                      >
+                        <option value="">Year</option>
+                        {generateYearOptions().map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
+                      </select>
+                      <select
+                        value={award.date ? award.date.split('-')[1] : ''}
+                        onChange={(e) => handleAwardDateChange(index, 'month', e.target.value)}
+                        className="date-month"
+                      >
+                        <option value="">Month</option>
+                        {generateMonthOptions().map(month => (
+                          <option key={month.value} value={month.value}>{month.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    value={award.description}
+                    onChange={(e) => updateAward(index, 'description', e.target.value)}
+                    rows="3"
+                    placeholder="Describe the award or achievement..."
+                  />
+                </div>
+                <button type="button" onClick={() => removeAward(index)} className="btn-remove">
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button type="button" onClick={addAward} className="btn-add">
+              + Add Award
+            </button>
+          </div>
+        )
+
+      case 11:
+        return (
+          <div className="step-content">
+            <div className="step-header">
+              <h2>🤝 Volunteer Work</h2>
+              <p>Show your community involvement</p>
+            </div>
+            {(data.volunteer || []).map((vol, index) => (
+              <div key={index} className="form-item-group">
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Organization *</label>
+                    <input
+                      type="text"
+                      value={vol.organization}
+                      onChange={(e) => updateVolunteer(index, 'organization', e.target.value)}
+                      placeholder="Organization name"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Position</label>
+                    <input
+                      type="text"
+                      value={vol.position}
+                      onChange={(e) => updateVolunteer(index, 'position', e.target.value)}
+                      placeholder="e.g., Volunteer Coordinator"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Start Date</label>
+                    <div className="date-selector">
+                      <select
+                        value={vol.startDate ? vol.startDate.split('-')[0] : ''}
+                        onChange={(e) => handleVolunteerDateChange(index, 'startDate', 'year', e.target.value)}
+                        className="date-year"
+                      >
+                        <option value="">Year</option>
+                        {generateYearOptions().map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
+                      </select>
+                      <select
+                        value={vol.startDate ? vol.startDate.split('-')[1] : ''}
+                        onChange={(e) => handleVolunteerDateChange(index, 'startDate', 'month', e.target.value)}
+                        className="date-month"
+                      >
+                        <option value="">Month</option>
+                        {generateMonthOptions().map(month => (
+                          <option key={month.value} value={month.value}>{month.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>End Date</label>
+                    {vol.current ? (
+                      <div className="current-indicator">Present</div>
+                    ) : (
+                      <div className="date-selector">
+                        <select
+                          value={vol.endDate ? vol.endDate.split('-')[0] : ''}
+                          onChange={(e) => handleVolunteerDateChange(index, 'endDate', 'year', e.target.value)}
+                          className="date-year"
+                        >
+                          <option value="">Year</option>
+                          {generateYearOptions().map(year => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                        <select
+                          value={vol.endDate ? vol.endDate.split('-')[1] : ''}
+                          onChange={(e) => handleVolunteerDateChange(index, 'endDate', 'month', e.target.value)}
+                          className="date-month"
+                        >
+                          <option value="">Month</option>
+                          {generateMonthOptions().map(month => (
+                            <option key={month.value} value={month.value}>{month.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                  <div className="form-group checkbox-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={vol.current}
+                        onChange={(e) => updateVolunteer(index, 'current', e.target.checked)}
+                      />
+                      Currently volunteering
+                    </label>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    value={vol.description}
+                    onChange={(e) => updateVolunteer(index, 'description', e.target.value)}
+                    rows="4"
+                    placeholder="Describe your volunteer work and impact..."
+                  />
+                </div>
+                <button type="button" onClick={() => removeVolunteer(index)} className="btn-remove">
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button type="button" onClick={addVolunteer} className="btn-add">
+              + Add Volunteer Work
             </button>
           </div>
         )

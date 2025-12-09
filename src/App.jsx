@@ -37,7 +37,10 @@ function App() {
     skills: [],
     projects: [],
     languages: [],
-    certifications: []
+    certifications: [],
+    references: [],
+    awards: [],
+    volunteer: []
   })
 
   const [selectedTemplate, setSelectedTemplate] = useState(1)

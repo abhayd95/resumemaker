@@ -133,6 +133,55 @@ const Template6 = ({ data, colorTheme = 'blue' }) => {
             ))}
           </section>
         )}
+
+        {data.references && data.references.length > 0 && (
+          <section className="main-section-6">
+            <h2 className="main-title-6">References</h2>
+            {data.references.map((ref, index) => (
+              <div key={index} className="cert-item-6">
+                <h3>{ref.name}</h3>
+                <div className="cert-meta-6">
+                  {ref.position} {ref.company && `• ${ref.company}`}
+                </div>
+                <div className="cert-desc-6">
+                  {ref.email && <span>📧 {ref.email}</span>}
+                  {ref.phone && <span> 📱 {ref.phone}</span>}
+                </div>
+                {ref.relationship && <div className="cert-desc-6">{ref.relationship}</div>}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.awards && data.awards.length > 0 && (
+          <section className="main-section-6">
+            <h2 className="main-title-6">Awards & Achievements</h2>
+            {data.awards.map((award, index) => (
+              <div key={index} className="cert-item-6">
+                <h3>{award.title}</h3>
+                <div className="cert-meta-6">
+                  {award.organization} {award.date && `• ${award.date}`}
+                </div>
+                {award.description && <div className="cert-desc-6">{award.description}</div>}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.volunteer && data.volunteer.length > 0 && (
+          <section className="main-section-6">
+            <h2 className="main-title-6">Volunteer Work</h2>
+            {data.volunteer.map((vol, index) => (
+              <div key={index} className="cert-item-6">
+                <h3>{vol.position || 'Volunteer'}</h3>
+                <div className="cert-meta-6">
+                  {vol.organization} • {vol.startDate} - {vol.current ? 'Present' : vol.endDate}
+                </div>
+                {vol.description && <div className="cert-desc-6">{vol.description}</div>}
+              </div>
+            ))}
+          </section>
+        )}
       </div>
     </div>
   )

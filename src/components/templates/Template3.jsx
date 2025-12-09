@@ -122,6 +122,54 @@ const Template3 = ({ data }) => {
                 ))}
               </section>
             )}
+
+            {data.references && data.references.length > 0 && (
+              <section className="resume-section-3">
+                <h2 className="section-title-3">References</h2>
+                {data.references.map((ref, index) => (
+                  <div key={index} className="item-3">
+                    <h3 className="item-title-3">{ref.name}</h3>
+                    {ref.position && <div className="item-meta-3">{ref.position}</div>}
+                    {ref.company && <div className="item-meta-3">{ref.company}</div>}
+                    <div className="item-description-3">
+                      {ref.email && <span>📧 {ref.email}</span>}
+                      {ref.phone && <span> 📱 {ref.phone}</span>}
+                    </div>
+                    {ref.relationship && <div className="item-description-3">{ref.relationship}</div>}
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {data.awards && data.awards.length > 0 && (
+              <section className="resume-section-3">
+                <h2 className="section-title-3">Awards & Achievements</h2>
+                {data.awards.map((award, index) => (
+                  <div key={index} className="item-3">
+                    <h3 className="item-title-3">{award.title}</h3>
+                    {award.organization && <div className="item-meta-3">{award.organization}</div>}
+                    {award.date && <div className="item-date-3">{award.date}</div>}
+                    {award.description && <div className="item-description-3">{award.description}</div>}
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {data.volunteer && data.volunteer.length > 0 && (
+              <section className="resume-section-3">
+                <h2 className="section-title-3">Volunteer Work</h2>
+                {data.volunteer.map((vol, index) => (
+                  <div key={index} className="item-3">
+                    <h3 className="item-title-3">{vol.position || 'Volunteer'}</h3>
+                    {vol.organization && <div className="item-meta-3">{vol.organization}</div>}
+                    <div className="item-date-3">
+                      {vol.startDate} - {vol.current ? 'Present' : vol.endDate}
+                    </div>
+                    {vol.description && <div className="item-description-3">{vol.description}</div>}
+                  </div>
+                ))}
+              </section>
+            )}
           </div>
         </div>
       </div>

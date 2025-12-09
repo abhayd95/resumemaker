@@ -132,6 +132,55 @@ const Template5 = ({ data, colorTheme = 'blue' }) => {
             ))}
           </section>
         )}
+
+        {data.references && data.references.length > 0 && (
+          <section className="resume-section-5">
+            <h2 className="section-title-5">References</h2>
+            {data.references.map((ref, index) => (
+              <div key={index} className="education-item-5">
+                <h3>{ref.name}</h3>
+                <div className="edu-meta-5">
+                  {ref.position} {ref.company && `• ${ref.company}`}
+                </div>
+                <div className="edu-desc-5">
+                  {ref.email && <span>📧 {ref.email}</span>}
+                  {ref.phone && <span> 📱 {ref.phone}</span>}
+                </div>
+                {ref.relationship && <div className="edu-desc-5">{ref.relationship}</div>}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.awards && data.awards.length > 0 && (
+          <section className="resume-section-5">
+            <h2 className="section-title-5">Awards & Achievements</h2>
+            {data.awards.map((award, index) => (
+              <div key={index} className="education-item-5">
+                <h3>{award.title}</h3>
+                <div className="edu-meta-5">
+                  {award.organization} {award.date && `• ${award.date}`}
+                </div>
+                {award.description && <div className="edu-desc-5">{award.description}</div>}
+              </div>
+            ))}
+          </section>
+        )}
+
+        {data.volunteer && data.volunteer.length > 0 && (
+          <section className="resume-section-5">
+            <h2 className="section-title-5">Volunteer Work</h2>
+            {data.volunteer.map((vol, index) => (
+              <div key={index} className="education-item-5">
+                <h3>{vol.position || 'Volunteer'}</h3>
+                <div className="edu-meta-5">
+                  {vol.organization} • {vol.startDate} - {vol.current ? 'Present' : vol.endDate}
+                </div>
+                {vol.description && <div className="edu-desc-5">{vol.description}</div>}
+              </div>
+            ))}
+          </section>
+        )}
       </div>
     </div>
   )

@@ -124,6 +124,63 @@ const Template2 = ({ data }) => {
           ))}
         </section>
       )}
+
+      {data.references && data.references.length > 0 && (
+        <section className="resume-section-2">
+          <h2 className="section-title-2">References</h2>
+          <div className="section-divider"></div>
+          {data.references.map((ref, index) => (
+            <div key={index} className="item-block">
+              <div className="item-title-row">
+                <h3>{ref.name}</h3>
+              </div>
+              {ref.position && <div className="item-subtitle">{ref.position}</div>}
+              {ref.company && <div className="item-text">{ref.company}</div>}
+              <div className="item-text">
+                {ref.email && <span>📧 {ref.email}</span>}
+                {ref.phone && <span> 📱 {ref.phone}</span>}
+              </div>
+              {ref.relationship && <div className="item-text">Relationship: {ref.relationship}</div>}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {data.awards && data.awards.length > 0 && (
+        <section className="resume-section-2">
+          <h2 className="section-title-2">Awards & Achievements</h2>
+          <div className="section-divider"></div>
+          {data.awards.map((award, index) => (
+            <div key={index} className="item-block">
+              <div className="item-title-row">
+                <h3>{award.title}</h3>
+                {award.date && <span className="date-range">{award.date}</span>}
+              </div>
+              {award.organization && <div className="item-subtitle">{award.organization}</div>}
+              {award.description && <div className="item-text">{award.description}</div>}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {data.volunteer && data.volunteer.length > 0 && (
+        <section className="resume-section-2">
+          <h2 className="section-title-2">Volunteer Work</h2>
+          <div className="section-divider"></div>
+          {data.volunteer.map((vol, index) => (
+            <div key={index} className="item-block">
+              <div className="item-title-row">
+                <h3>{vol.position || 'Volunteer'}</h3>
+                <span className="date-range">
+                  {vol.startDate} - {vol.current ? 'Present' : vol.endDate}
+                </span>
+              </div>
+              {vol.organization && <div className="item-subtitle">{vol.organization}</div>}
+              {vol.description && <div className="item-text">{vol.description}</div>}
+            </div>
+          ))}
+        </section>
+      )}
     </div>
   )
 }

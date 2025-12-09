@@ -118,6 +118,60 @@ const Template1 = ({ data }) => {
           ))}
         </section>
       )}
+
+      {data.references && data.references.length > 0 && (
+        <section className="resume-section">
+          <h2 className="section-title">References</h2>
+          {data.references.map((ref, index) => (
+            <div key={index} className="reference-item">
+              <div className="item-header">
+                <h3>{ref.name}</h3>
+                {ref.position && <span className="position">{ref.position}</span>}
+                {ref.company && <span className="company">{ref.company}</span>}
+              </div>
+              <div className="reference-contact">
+                {ref.email && <span>📧 {ref.email}</span>}
+                {ref.phone && <span>📱 {ref.phone}</span>}
+                {ref.relationship && <span className="relationship">{ref.relationship}</span>}
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {data.awards && data.awards.length > 0 && (
+        <section className="resume-section">
+          <h2 className="section-title">Awards & Achievements</h2>
+          {data.awards.map((award, index) => (
+            <div key={index} className="award-item">
+              <div className="item-header">
+                <h3>{award.title}</h3>
+                {award.organization && <span className="organization">{award.organization}</span>}
+                {award.date && <span className="date">{award.date}</span>}
+              </div>
+              {award.description && <p className="item-description">{award.description}</p>}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {data.volunteer && data.volunteer.length > 0 && (
+        <section className="resume-section">
+          <h2 className="section-title">Volunteer Work</h2>
+          {data.volunteer.map((vol, index) => (
+            <div key={index} className="volunteer-item">
+              <div className="item-header">
+                <h3>{vol.position || 'Volunteer'}</h3>
+                <span className="company">{vol.organization}</span>
+                <span className="date">
+                  {vol.startDate} - {vol.current ? 'Present' : vol.endDate}
+                </span>
+              </div>
+              {vol.description && <p className="item-description">{vol.description}</p>}
+            </div>
+          ))}
+        </section>
+      )}
     </div>
   )
 }

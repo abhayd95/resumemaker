@@ -135,6 +135,54 @@ const Template7 = ({ data, colorTheme = 'blue' }) => {
               ))}
             </section>
           )}
+
+          {data.references && data.references.length > 0 && (
+            <section className="section-7">
+              <h2 className="section-title-7">References</h2>
+              {data.references.map((ref, index) => (
+                <div key={index} className="cert-item-7">
+                  <h3>{ref.name}</h3>
+                  {ref.position && <div className="item-meta-7">{ref.position}</div>}
+                  {ref.company && <div className="item-meta-7">{ref.company}</div>}
+                  <div className="cert-desc-7">
+                    {ref.email && <span>📧 {ref.email}</span>}
+                    {ref.phone && <span> 📱 {ref.phone}</span>}
+                  </div>
+                  {ref.relationship && <div className="cert-desc-7">{ref.relationship}</div>}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {data.awards && data.awards.length > 0 && (
+            <section className="section-7">
+              <h2 className="section-title-7">Awards & Achievements</h2>
+              {data.awards.map((award, index) => (
+                <div key={index} className="cert-item-7">
+                  <h3>{award.title}</h3>
+                  {award.organization && <div className="item-meta-7">{award.organization}</div>}
+                  {award.date && <div className="item-date-7">{award.date}</div>}
+                  {award.description && <div className="cert-desc-7">{award.description}</div>}
+                </div>
+              ))}
+            </section>
+          )}
+
+          {data.volunteer && data.volunteer.length > 0 && (
+            <section className="section-7">
+              <h2 className="section-title-7">Volunteer Work</h2>
+              {data.volunteer.map((vol, index) => (
+                <div key={index} className="cert-item-7">
+                  <h3>{vol.position || 'Volunteer'}</h3>
+                  {vol.organization && <div className="item-meta-7">{vol.organization}</div>}
+                  <div className="item-date-7">
+                    {vol.startDate} - {vol.current ? 'Present' : vol.endDate}
+                  </div>
+                  {vol.description && <div className="cert-desc-7">{vol.description}</div>}
+                </div>
+              ))}
+            </section>
+          )}
         </div>
       </div>
     </div>
