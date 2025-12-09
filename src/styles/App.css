@@ -1970,20 +1970,22 @@ body::before {
 }
 
 .demo-preview-mini .demo-preview-wrapper {
-  transform: scale(0.28);
+  transform: scale(0.3);
   transform-origin: top center;
-  width: 357.14%;
-  height: 357.14%;
+  width: 333.33%;
+  height: 333.33%;
   overflow: visible;
   position: absolute;
   top: 0;
   left: 50%;
-  margin-left: -178.57%;
+  margin-left: -166.67%;
   pointer-events: none;
   will-change: transform;
   z-index: 1;
   backface-visibility: visible;
   -webkit-backface-visibility: visible;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .demo-preview-mini .resume-wrapper {
@@ -1995,11 +1997,14 @@ body::before {
   min-height: 297mm !important;
   max-height: 297mm !important;
   display: block !important;
-  position: relative;
+  position: relative !important;
   padding: 1.5rem !important;
-  box-sizing: border-box;
-  margin: 0 auto;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
   transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 2 !important;
 }
 
 /* Force visibility of all template content */
