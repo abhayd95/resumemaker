@@ -84,10 +84,14 @@ const LinkedInImport = ({ onImport, onClose }) => {
     const file = event.target.files[0]
     if (!file) return
 
-    if (file.type !== 'application/json') {
-      setError('Please upload a JSON file exported from LinkedIn')
+    // Accept both JSON and text files (LinkedIn exports can be .txt or .json)
+    if (!file.name.endsWith('.json') && !file.name.endsWith('.txt')) {
+      setError('Please upload a JSON or TXT file exported from LinkedIn')
       return
     }
+
+    setIsImporting(true)
+    setError('')
 
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -95,53 +99,113 @@ const LinkedInImport = ({ onImport, onClose }) => {
         const data = JSON.parse(e.target.result)
         // Parse LinkedIn export JSON format
         const parsedData = parseLinkedInExport(data)
+        
+        // Validate parsed data
+        if (!parsedData.fullName && !parsedData.email) {
+          throw new Error('No valid profile data found in file')
+        }
+        
         setLinkedInData(parsedData)
         setError('')
+        alert('✅ LinkedIn data imported successfully from file!')
       } catch (err) {
-        setError('Invalid file format. Please upload a valid LinkedIn export JSON file.')
+        setError(`Invalid file format: ${err.message}. Please upload a valid LinkedIn export file.`)
+        console.error('File import error:', err)
+      } finally {
+        setIsImporting(false)
       }
     }
+    
+    reader.onerror = () => {
+      setError('Error reading file. Please try again.')
+      setIsImporting(false)
+    }
+    
     reader.readAsText(file)
   }
 
   const parseLinkedInExport = (data) => {
-    // Parse LinkedIn export JSON structure
-    const profile = data.Profile || data.profile || {}
-    const positions = data.Positions || data.positions || []
-    const educations = data.Educations || data.educations || []
-    const skills = data.Skills || data.skills || []
-    const languages = data.Languages || data.languages || []
-
+    // Handle different LinkedIn export formats
+    // Format 1: Direct object with Profile, Positions, etc.
+    // Format 2: Array of objects
+    // Format 3: Nested structure
+    
+    let profile = {}
+    let positions = []
+    let educations = []
+    let skills = []
+    let languages = []
+    
+    // Check if data is an array
+    if (Array.isArray(data)) {
+      // Find profile object in array
+      profile = data.find(item => item.Profile || item.profile) || {}
+      positions = data.find(item => item.Positions || item.positions)?.Positions || 
+                  data.find(item => item.Positions || item.positions)?.positions || []
+      educations = data.find(item => item.Educations || item.educations)?.Educations || 
+                  data.find(item => item.Educations || item.educations)?.educations || []
+      skills = data.find(item => item.Skills || item.skills)?.Skills || 
+               data.find(item => item.Skills || item.skills)?.skills || []
+    } else {
+      // Direct object structure
+      profile = data.Profile || data.profile || data
+      positions = data.Positions || data.positions || data.Experience || data.experience || []
+      educations = data.Educations || data.educations || data.Education || data.education || []
+      skills = data.Skills || data.skills || []
+      languages = data.Languages || data.languages || []
+    }
+    
+    // Extract profile info (handle nested structures)
+    const profileData = profile.Profile || profile.profile || profile
+    
     return {
-      fullName: profile.FirstName && profile.LastName 
-        ? `${profile.FirstName} ${profile.LastName}` 
-        : profile.fullName || '',
-      email: profile.EmailAddresses?.[0] || profile.email || '',
-      phone: profile.PhoneNumbers?.[0] || profile.phone || '',
-      address: profile.Address || profile.address || '',
-      linkedin: profile.ProfileUrl || profile.linkedin || '',
-      summary: profile.Summary || profile.summary || '',
-      experience: positions.map(pos => ({
-        position: pos.Title || pos.title || '',
-        company: pos.CompanyName || pos.company || '',
-        startDate: formatDate(pos.StartDate || pos.startDate),
-        endDate: pos.EndDate ? formatDate(pos.EndDate) : (pos.endDate ? formatDate(pos.endDate) : ''),
-        current: !pos.EndDate && !pos.endDate,
-        description: pos.Description || pos.description || ''
-      })),
-      education: educations.map(edu => ({
-        degree: edu.Degree || edu.degree || '',
-        institution: edu.SchoolName || edu.institution || '',
-        field: edu.FieldOfStudy || edu.field || '',
-        startDate: formatDate(edu.StartDate || edu.startDate),
-        endDate: formatDate(edu.EndDate || edu.endDate),
-        gpa: edu.Grade || edu.gpa || ''
-      })),
-      skills: skills.map(skill => skill.Name || skill.name || skill).filter(Boolean),
-      languages: languages.map(lang => ({
-        name: lang.Name || lang.name || '',
-        proficiency: lang.Proficiency || lang.proficiency || 'Intermediate'
-      }))
+      fullName: (profileData.FirstName && profileData.LastName) 
+        ? `${profileData.FirstName} ${profileData.LastName}` 
+        : profileData.fullName || profileData.name || profileData.Name || '',
+      email: profileData.EmailAddresses?.[0] || profileData.EmailAddress || 
+             profileData.email || profileData.Email || '',
+      phone: profileData.PhoneNumbers?.[0] || profileData.PhoneNumber || 
+             profileData.phone || profileData.Phone || '',
+      address: profileData.Address || profileData.address || profileData.Location || profileData.location || '',
+      linkedin: profileData.ProfileUrl || profileData.profileUrl || profileData.ProfileURL || 
+                profileData.linkedin || profileData.LinkedIn || '',
+      summary: profileData.Summary || profileData.summary || profileData.Headline || profileData.headline || '',
+      experience: (Array.isArray(positions) ? positions : []).map(pos => {
+        const posData = pos.Position || pos.position || pos
+        return {
+          position: posData.Title || posData.title || posData.Position || posData.position || '',
+          company: posData.CompanyName || posData.companyName || posData.Company || posData.company || '',
+          startDate: formatDate(posData.StartDate || posData.startDate || posData.Start || posData.start),
+          endDate: posData.EndDate ? formatDate(posData.EndDate) : 
+                   (posData.endDate ? formatDate(posData.endDate) : 
+                   (posData.End ? formatDate(posData.End) : '')),
+          current: !posData.EndDate && !posData.endDate && !posData.End && !posData.end,
+          description: posData.Description || posData.description || posData.Summary || posData.summary || ''
+        }
+      }),
+      education: (Array.isArray(educations) ? educations : []).map(edu => {
+        const eduData = edu.Education || edu.education || edu
+        return {
+          degree: eduData.Degree || eduData.degree || eduData.DegreeName || eduData.degreeName || '',
+          institution: eduData.SchoolName || eduData.schoolName || eduData.School || eduData.school || 
+                       eduData.Institution || eduData.institution || '',
+          field: eduData.FieldOfStudy || eduData.fieldOfStudy || eduData.Field || eduData.field || '',
+          startDate: formatDate(eduData.StartDate || eduData.startDate || eduData.Start || eduData.start),
+          endDate: formatDate(eduData.EndDate || eduData.endDate || eduData.End || eduData.end),
+          gpa: eduData.Grade || eduData.grade || eduData.GPA || eduData.gpa || ''
+        }
+      }),
+      skills: (Array.isArray(skills) ? skills : []).map(skill => {
+        const skillData = skill.Skill || skill.skill || skill
+        return skillData.Name || skillData.name || skillData || skill
+      }).filter(Boolean),
+      languages: (Array.isArray(languages) ? languages : []).map(lang => {
+        const langData = lang.Language || lang.language || lang
+        return {
+          name: langData.Name || langData.name || langData || lang,
+          proficiency: langData.Proficiency || langData.proficiency || 'Intermediate'
+        }
+      })
     }
   }
 
@@ -291,6 +355,211 @@ const LinkedInImport = ({ onImport, onClose }) => {
                     onChange={(e) => handleManualFieldChange('skills', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
                     placeholder="JavaScript, React, Node.js, Python"
                   />
+                </div>
+                <div className="form-group">
+                  <label>Add Work Experience:</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLinkedInData(prev => ({
+                        ...prev,
+                        experience: [...prev.experience, {
+                          position: '',
+                          company: '',
+                          startDate: '',
+                          endDate: '',
+                          current: false,
+                          description: ''
+                        }]
+                      }))
+                    }}
+                    className="btn-add-experience"
+                  >
+                    + Add Experience
+                  </button>
+                  {linkedInData.experience.map((exp, idx) => (
+                    <div key={idx} className="experience-item">
+                      <input
+                        type="text"
+                        placeholder="Position (e.g., Software Engineer)"
+                        value={exp.position}
+                        onChange={(e) => {
+                          const newExp = [...linkedInData.experience]
+                          newExp[idx].position = e.target.value
+                          setLinkedInData(prev => ({ ...prev, experience: newExp }))
+                        }}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={exp.company}
+                        onChange={(e) => {
+                          const newExp = [...linkedInData.experience]
+                          newExp[idx].company = e.target.value
+                          setLinkedInData(prev => ({ ...prev, experience: newExp }))
+                        }}
+                      />
+                      <div className="date-inputs">
+                        <input
+                          type="month"
+                          placeholder="Start Date"
+                          value={exp.startDate}
+                          onChange={(e) => {
+                            const newExp = [...linkedInData.experience]
+                            newExp[idx].startDate = e.target.value
+                            setLinkedInData(prev => ({ ...prev, experience: newExp }))
+                          }}
+                        />
+                        <input
+                          type="month"
+                          placeholder="End Date"
+                          value={exp.endDate}
+                          onChange={(e) => {
+                            const newExp = [...linkedInData.experience]
+                            newExp[idx].endDate = e.target.value
+                            setLinkedInData(prev => ({ ...prev, experience: newExp }))
+                          }}
+                          disabled={exp.current}
+                        />
+                        <label className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={exp.current}
+                            onChange={(e) => {
+                              const newExp = [...linkedInData.experience]
+                              newExp[idx].current = e.target.checked
+                              if (e.target.checked) newExp[idx].endDate = ''
+                              setLinkedInData(prev => ({ ...prev, experience: newExp }))
+                            }}
+                          />
+                          Current
+                        </label>
+                      </div>
+                      <textarea
+                        placeholder="Job description..."
+                        value={exp.description}
+                        onChange={(e) => {
+                          const newExp = [...linkedInData.experience]
+                          newExp[idx].description = e.target.value
+                          setLinkedInData(prev => ({ ...prev, experience: newExp }))
+                        }}
+                        rows="2"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLinkedInData(prev => ({
+                            ...prev,
+                            experience: prev.experience.filter((_, i) => i !== idx)
+                          }))
+                        }}
+                        className="btn-remove"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="form-group">
+                  <label>Add Education:</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLinkedInData(prev => ({
+                        ...prev,
+                        education: [...prev.education, {
+                          degree: '',
+                          institution: '',
+                          field: '',
+                          startDate: '',
+                          endDate: '',
+                          gpa: ''
+                        }]
+                      }))
+                    }}
+                    className="btn-add-education"
+                  >
+                    + Add Education
+                  </button>
+                  {linkedInData.education.map((edu, idx) => (
+                    <div key={idx} className="education-item">
+                      <input
+                        type="text"
+                        placeholder="Degree (e.g., Bachelor of Science)"
+                        value={edu.degree}
+                        onChange={(e) => {
+                          const newEdu = [...linkedInData.education]
+                          newEdu[idx].degree = e.target.value
+                          setLinkedInData(prev => ({ ...prev, education: newEdu }))
+                        }}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Institution Name"
+                        value={edu.institution}
+                        onChange={(e) => {
+                          const newEdu = [...linkedInData.education]
+                          newEdu[idx].institution = e.target.value
+                          setLinkedInData(prev => ({ ...prev, education: newEdu }))
+                        }}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Field of Study"
+                        value={edu.field}
+                        onChange={(e) => {
+                          const newEdu = [...linkedInData.education]
+                          newEdu[idx].field = e.target.value
+                          setLinkedInData(prev => ({ ...prev, education: newEdu }))
+                        }}
+                      />
+                      <div className="date-inputs">
+                        <input
+                          type="month"
+                          placeholder="Start Date"
+                          value={edu.startDate}
+                          onChange={(e) => {
+                            const newEdu = [...linkedInData.education]
+                            newEdu[idx].startDate = e.target.value
+                            setLinkedInData(prev => ({ ...prev, education: newEdu }))
+                          }}
+                        />
+                        <input
+                          type="month"
+                          placeholder="End Date"
+                          value={edu.endDate}
+                          onChange={(e) => {
+                            const newEdu = [...linkedInData.education]
+                            newEdu[idx].endDate = e.target.value
+                            setLinkedInData(prev => ({ ...prev, education: newEdu }))
+                          }}
+                        />
+                        <input
+                          type="text"
+                          placeholder="GPA (optional)"
+                          value={edu.gpa}
+                          onChange={(e) => {
+                            const newEdu = [...linkedInData.education]
+                            newEdu[idx].gpa = e.target.value
+                            setLinkedInData(prev => ({ ...prev, education: newEdu }))
+                          }}
+                          className="gpa-input"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLinkedInData(prev => ({
+                            ...prev,
+                            education: prev.education.filter((_, i) => i !== idx)
+                          }))
+                        }}
+                        className="btn-remove"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
