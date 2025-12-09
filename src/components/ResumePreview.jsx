@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Template1 from './templates/Template1'
 import Template2 from './templates/Template2'
 import Template3 from './templates/Template3'
@@ -8,19 +8,91 @@ import Template6 from './templates/Template6'
 import Template7 from './templates/Template7'
 import { generatePDF } from '../utils/pdfGenerator'
 import { exportToWord } from '../utils/wordExporter'
+import { exportToTXT, exportToHTML, exportToJSON, downloadFile } from '../utils/exportFormats'
 
-const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave }) => {
+const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, coverLetterData, userName, resumeId }) => {
   const resumeRef = useRef(null)
+  const [showExportMenu, setShowExportMenu] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  const exportMenuRef = useRef(null)
 
-  const handleDownload = () => {
-    generatePDF(resumeRef.current, data.personalInfo.fullName || 'resume')
+  // Close export menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
+        setShowExportMenu(false)
+      }
+    }
+
+    if (showExportMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showExportMenu])
+
+  const handleDownload = async () => {
+    try {
+      generatePDF(resumeRef.current, data.personalInfo.fullName || 'resume')
+      // Track download
+      if (userName && resumeId) {
+        const { trackResumeDownload } = await import('../utils/analyticsTracker')
+        trackResumeDownload(userName, resumeId)
+      }
+    } catch (error) {
+      alert('Error downloading PDF: ' + error.message)
+    }
   }
 
   const handleDownloadWord = async () => {
     try {
+      setIsExporting(true)
       await exportToWord(data, data.personalInfo.fullName || 'resume')
+      if (userName && resumeId) {
+        const { trackResumeDownload } = await import('../utils/analyticsTracker')
+        trackResumeDownload(userName, resumeId)
+      }
     } catch (error) {
       alert('Error exporting to Word: ' + error.message)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleExport = async (format) => {
+    try {
+      setIsExporting(true)
+      const filename = data.personalInfo?.fullName || 'resume'
+      
+      switch(format) {
+        case 'txt':
+          const txtContent = exportToTXT(data)
+          downloadFile(txtContent, `${filename}.txt`, 'text/plain')
+          break
+        case 'html':
+          const htmlContent = exportToHTML(data, templateId)
+          downloadFile(htmlContent, `${filename}.html`, 'text/html')
+          break
+        case 'json':
+          const jsonContent = exportToJSON(data, templateId, coverLetterData)
+          downloadFile(jsonContent, `${filename}.json`, 'application/json')
+          break
+        default:
+          break
+      }
+      
+      if (userName && resumeId) {
+        const { trackResumeDownload } = await import('../utils/analyticsTracker')
+        trackResumeDownload(userName, resumeId)
+      }
+      
+      setShowExportMenu(false)
+    } catch (error) {
+      alert('Error exporting: ' + error.message)
+    } finally {
+      setIsExporting(false)
     }
   }
 
@@ -65,6 +137,28 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave }
           <button onClick={handlePrintPreview} className="btn-print">
             🖨️ Print Preview
           </button>
+          <div className="export-dropdown" style={{ position: 'relative' }} ref={exportMenuRef}>
+            <button 
+              onClick={() => setShowExportMenu(!showExportMenu)} 
+              className="btn-export"
+              disabled={isExporting}
+            >
+              {isExporting ? '⏳ Exporting...' : '📤 Export'}
+            </button>
+            {showExportMenu && (
+              <div className="export-menu">
+                <button onClick={() => handleExport('txt')} className="export-option">
+                  📝 Plain Text (.txt)
+                </button>
+                <button onClick={() => handleExport('html')} className="export-option">
+                  🌐 HTML (.html)
+                </button>
+                <button onClick={() => handleExport('json')} className="export-option">
+                  💾 JSON (.json)
+                </button>
+              </div>
+            )}
+          </div>
           <button onClick={handleDownloadWord} className="btn-word">
             📄 Download Word
           </button>

@@ -87,10 +87,48 @@ async function initializeDatabase() {
         user_name VARCHAR(255) NOT NULL,
         resume_data JSON NOT NULL,
         template_id INT DEFAULT 1,
+        cover_letter_data JSON,
+        view_count INT DEFAULT 0,
+        download_count INT DEFAULT 0,
+        last_viewed_at TIMESTAMP NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         INDEX idx_user_name (user_name),
         INDEX idx_created_at (created_at)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `)
+
+        // Add analytics columns if they don't exist (migration)
+        try {
+            await connection.query(`
+                ALTER TABLE resumes 
+                ADD COLUMN IF NOT EXISTS view_count INT DEFAULT 0,
+                ADD COLUMN IF NOT EXISTS download_count INT DEFAULT 0,
+                ADD COLUMN IF NOT EXISTS last_viewed_at TIMESTAMP NULL,
+                ADD COLUMN IF NOT EXISTS cover_letter_data JSON
+            `)
+        } catch (migrationError) {
+            // Columns might already exist, that's okay
+            if (!migrationError.message.includes('Duplicate column name')) {
+                console.log('Migration note:', migrationError.message)
+            }
+        }
+
+        // Create versions table for resume versioning
+        await connection.query(`
+      CREATE TABLE IF NOT EXISTS resume_versions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        resume_id INT NOT NULL,
+        version_number INT NOT NULL,
+        resume_data JSON NOT NULL,
+        template_id INT DEFAULT 1,
+        cover_letter_data JSON,
+        version_notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE,
+        INDEX idx_resume_id (resume_id),
+        INDEX idx_version_number (resume_id, version_number),
+        UNIQUE KEY unique_resume_version (resume_id, version_number)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `)
 

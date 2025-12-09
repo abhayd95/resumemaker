@@ -1,9 +1,36 @@
-const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownload, onEdit, onShare, onClose, userName }) => {
+import { useState, useEffect } from 'react'
+import { getResumeAnalytics } from '../utils/analyticsTracker'
+
+const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownload, onEdit, onShare, onVersionHistory, onClose, userName }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [filterTemplate, setFilterTemplate] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
+  const [analytics, setAnalytics] = useState({})
+
+  // Load analytics for all resumes
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      const analyticsData = {}
+      for (const resume of resumes) {
+        try {
+          const data = await getResumeAnalytics(userName, resume.id)
+          if (data) {
+            analyticsData[resume.id] = data
+          }
+        } catch (error) {
+          console.error(`Error loading analytics for resume ${resume.id}:`, error)
+        }
+      }
+      setAnalytics(analyticsData)
+    }
+    
+    if (userName && resumes.length > 0) {
+      loadAnalytics()
+    }
+  }, [userName, resumes])
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Never'
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -134,6 +161,22 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
                       Updated: {formatDate(resume.updated_at)}
                     </p>
                   )}
+                  {/* Analytics Badge */}
+                  {analytics[resume.id] && (
+                    <div className="resume-analytics">
+                      <span className="analytics-badge" title="Views">
+                        👁️ {analytics[resume.id].view_count || 0}
+                      </span>
+                      <span className="analytics-badge" title="Downloads">
+                        ⬇️ {analytics[resume.id].download_count || 0}
+                      </span>
+                      {analytics[resume.id].last_viewed_at && (
+                        <span className="analytics-badge" title="Last Viewed">
+                          🕒 {formatDate(analytics[resume.id].last_viewed_at)}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className="resume-item-actions">
                   {onView && (
@@ -170,6 +213,15 @@ const SaveLoadPanel = ({ resumes, onLoad, onDelete, onDuplicate, onView, onDownl
                       title="Share Resume"
                     >
                       🔗 Share
+                    </button>
+                  )}
+                  {onVersionHistory && (
+                    <button 
+                      onClick={() => onVersionHistory(resume)} 
+                      className="btn-version"
+                      title="Version History"
+                    >
+                      📚 Versions
                     </button>
                   )}
                   <button 

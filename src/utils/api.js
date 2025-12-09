@@ -30,7 +30,7 @@ export const resumeAPI = {
   },
 
   // Save a new resume
-  saveResume: async (userName, resumeData, templateId) => {
+  saveResume: async (userName, resumeData, templateId, coverLetterData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/resumes/save`, {
         method: 'POST',
@@ -41,6 +41,7 @@ export const resumeAPI = {
           userName,
           resumeData,
           templateId,
+          coverLetterData,
         }),
       })
       const data = await response.json()
@@ -52,7 +53,7 @@ export const resumeAPI = {
   },
 
   // Update an existing resume
-  updateResume: async (id, userName, resumeData, templateId) => {
+  updateResume: async (id, userName, resumeData, templateId, coverLetterData, createVersion = true) => {
     try {
       const response = await fetch(`${API_BASE_URL}/resumes/${id}`, {
         method: 'PUT',
@@ -63,6 +64,8 @@ export const resumeAPI = {
           userName,
           resumeData,
           templateId,
+          coverLetterData,
+          createVersion,
         }),
       })
       const data = await response.json()
@@ -95,6 +98,91 @@ export const resumeAPI = {
       return data
     } catch (error) {
       console.error('Error checking health:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  // Analytics endpoints
+  getAnalytics: async (userName, id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resumes/${userName}/${id}/analytics`)
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching analytics:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  trackView: async (userName, id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resumes/${userName}/${id}/view`, {
+        method: 'POST',
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error tracking view:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  trackDownload: async (userName, id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resumes/${userName}/${id}/download`, {
+        method: 'POST',
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error tracking download:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  // Version management endpoints
+  getVersions: async (userName, id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resumes/${userName}/${id}/versions`)
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error fetching versions:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  createVersion: async (userName, id, resumeData, templateId, coverLetterData, versionNotes) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resumes/${userName}/${id}/versions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resumeData,
+          templateId,
+          coverLetterData,
+          versionNotes,
+        }),
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error creating version:', error)
+      return { success: false, error: error.message }
+    }
+  },
+
+  restoreVersion: async (userName, id, versionId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/resumes/${userName}/${id}/restore/${versionId}`, {
+        method: 'POST',
+      })
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error('Error restoring version:', error)
       return { success: false, error: error.message }
     }
   },

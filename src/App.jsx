@@ -8,6 +8,8 @@ import DemoResumeModal from './components/DemoResumeModal'
 import ThemeToggle from './components/ThemeToggle'
 import ResumeShareModal from './components/ResumeShareModal'
 import ATSChecker from './components/ATSChecker'
+import CoverLetterBuilder from './components/CoverLetterBuilder'
+import ResumeVersionHistory from './components/ResumeVersionHistory'
 import { resumeAPI } from './utils/api'
 import { initTheme } from './utils/theme'
 import './styles/App.css'
@@ -49,11 +51,92 @@ function App() {
   const [showATSChecker, setShowATSChecker] = useState(false)
   const [selectedResumeForShare, setSelectedResumeForShare] = useState(null)
   const [currentResumeId, setCurrentResumeId] = useState(null)
+  const [coverLetterData, setCoverLetterData] = useState(null)
+  const [showCoverLetter, setShowCoverLetter] = useState(false)
+  const [showVersionHistory, setShowVersionHistory] = useState(false)
+  const [selectedResumeForVersion, setSelectedResumeForVersion] = useState(null)
+  
+  // Undo/Redo history
+  const [history, setHistory] = useState([])
+  const [historyIndex, setHistoryIndex] = useState(-1)
+  const MAX_HISTORY = 50
 
   // Initialize theme
   useEffect(() => {
     initTheme()
   }, [])
+
+  // Initialize history with current formData
+  useEffect(() => {
+    if (history.length === 0) {
+      addToHistory(formData)
+    }
+  }, [])
+
+  // Save history to sessionStorage
+  useEffect(() => {
+    if (history.length > 0) {
+      sessionStorage.setItem('resumeHistory', JSON.stringify({
+        history,
+        historyIndex
+      }))
+    }
+  }, [history, historyIndex])
+
+  // Load history from sessionStorage on mount
+  useEffect(() => {
+    const savedHistory = sessionStorage.getItem('resumeHistory')
+    if (savedHistory) {
+      try {
+        const { history: savedHistoryData, historyIndex: savedIndex } = JSON.parse(savedHistory)
+        if (savedHistoryData && savedHistoryData.length > 0) {
+          setHistory(savedHistoryData)
+          setHistoryIndex(savedIndex)
+        }
+      } catch (e) {
+        console.error('Error loading history:', e)
+      }
+    }
+  }, [])
+
+  // Add to history
+  const addToHistory = (data) => {
+    const newHistory = history.slice(0, historyIndex + 1)
+    newHistory.push(JSON.parse(JSON.stringify(data))) // Deep copy
+    
+    // Limit history size
+    if (newHistory.length > MAX_HISTORY) {
+      newHistory.shift()
+    } else {
+      setHistoryIndex(newHistory.length - 1)
+    }
+    
+    setHistory(newHistory)
+  }
+
+  // Undo function
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1
+      setHistoryIndex(newIndex)
+      setFormData(JSON.parse(JSON.stringify(history[newIndex])))
+    }
+  }
+
+  // Redo function
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      const newIndex = historyIndex + 1
+      setHistoryIndex(newIndex)
+      setFormData(JSON.parse(JSON.stringify(history[newIndex])))
+    }
+  }
+
+  // Update formData and add to history
+  const updateFormData = (newData) => {
+    setFormData(newData)
+    addToHistory(newData)
+  }
 
   // Get user name from email or prompt
   useEffect(() => {
@@ -128,7 +211,7 @@ function App() {
   }
 
   const handleFormSubmit = (data) => {
-    setFormData(data)
+    updateFormData(data)
     // Set userName from email if not set
     if (!userName && data.personalInfo.email) {
       const emailName = data.personalInfo.email.split('@')[0]
@@ -182,8 +265,8 @@ function App() {
       }
 
       const result = currentResumeId
-        ? await resumeAPI.updateResume(currentResumeId, userName, formData, selectedTemplate)
-        : await resumeAPI.saveResume(userName, formData, selectedTemplate)
+        ? await resumeAPI.updateResume(currentResumeId, userName, formData, selectedTemplate, coverLetterData)
+        : await resumeAPI.saveResume(userName, formData, selectedTemplate, coverLetterData)
 
       if (result.success) {
         // Success notification
@@ -368,18 +451,37 @@ function App() {
         setShowATSChecker(true)
       }
       
+      // Ctrl+Z or Cmd+Z - Undo
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        if (step === 1) {
+          handleUndo()
+        }
+      }
+      
+      // Ctrl+Y or Cmd+Y or Ctrl+Shift+Z - Redo
+      if (((e.ctrlKey || e.metaKey) && e.key === 'y') || 
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'z')) {
+        e.preventDefault()
+        if (step === 1) {
+          handleRedo()
+        }
+      }
+      
       // Escape - Close modals
       if (e.key === 'Escape') {
         if (showShareModal) setShowShareModal(false)
         if (showATSChecker) setShowATSChecker(false)
         if (showSaveLoad) setShowSaveLoad(false)
         if (showDemoModal) setShowDemoModal(false)
+        if (showCoverLetter) setShowCoverLetter(false)
+        if (showVersionHistory) setShowVersionHistory(false)
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal])
+  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal, showCoverLetter, showVersionHistory, historyIndex, history])
 
   return (
     <div className="app">
@@ -424,13 +526,41 @@ function App() {
             )}
           </button>
           {step === 1 && (
-            <button 
-              onClick={() => setShowATSChecker(true)} 
-              className="btn-ats"
-              title="Check ATS Compatibility (Ctrl+K)"
-            >
-              ✅ ATS Check
-            </button>
+            <>
+              <button 
+                onClick={() => setShowATSChecker(true)} 
+                className="btn-ats"
+                title="Check ATS Compatibility (Ctrl+K)"
+              >
+                ✅ ATS Check
+              </button>
+              <button 
+                onClick={() => setShowCoverLetter(true)} 
+                className="btn-cover-letter"
+                title="Cover Letter Builder"
+              >
+                📝 Cover Letter
+              </button>
+              {/* Undo/Redo buttons */}
+              <div className="undo-redo-group">
+                <button 
+                  onClick={handleUndo} 
+                  className="btn-undo"
+                  disabled={historyIndex <= 0}
+                  title="Undo (Ctrl+Z)"
+                >
+                  ↶ Undo
+                </button>
+                <button 
+                  onClick={handleRedo} 
+                  className="btn-redo"
+                  disabled={historyIndex >= history.length - 1}
+                  title="Redo (Ctrl+Y)"
+                >
+                  ↷ Redo
+                </button>
+              </div>
+            </>
           )}
           {step === 1 && formData.personalInfo.fullName && (
             <button onClick={handleSaveResume} className="btn-save" title="Save as Draft (Ctrl+S)">
@@ -461,6 +591,10 @@ function App() {
           onEdit={handleEditResume}
           onDownload={handleDownloadResume}
           onShare={handleShareResume}
+          onVersionHistory={(resume) => {
+            setSelectedResumeForVersion(resume)
+            setShowVersionHistory(true)
+          }}
           onClose={() => setShowSaveLoad(false)}
           userName={userName}
         />
@@ -483,6 +617,40 @@ function App() {
         onClose={() => setShowATSChecker(false)}
         formData={formData}
       />
+
+      <CoverLetterBuilder
+        isOpen={showCoverLetter}
+        onClose={() => setShowCoverLetter(false)}
+        resumeData={formData}
+        onSave={async (coverLetter) => {
+          setCoverLetterData(coverLetter)
+          if (currentResumeId && userName) {
+            await resumeAPI.updateResume(currentResumeId, userName, formData, selectedTemplate, coverLetter)
+          }
+        }}
+        userName={userName}
+        resumeId={currentResumeId}
+      />
+
+      {showVersionHistory && selectedResumeForVersion && (
+        <ResumeVersionHistory
+          isOpen={showVersionHistory}
+          onClose={() => {
+            setShowVersionHistory(false)
+            setSelectedResumeForVersion(null)
+          }}
+          resume={selectedResumeForVersion}
+          userName={userName}
+          onRestore={(resumeData, templateId, coverLetterData) => {
+            setFormData(resumeData)
+            setSelectedTemplate(templateId)
+            if (coverLetterData) {
+              setCoverLetterData(coverLetterData)
+            }
+            setStep(1)
+          }}
+        />
+      )}
 
       {/* Step Progress Indicator */}
       <div className="step-indicator">
@@ -521,7 +689,15 @@ function App() {
         )}
 
         {step === 3 && (
-          <ResumePreview 
+          <ResumePreview
+            data={formData}
+            templateId={selectedTemplate}
+            colorTheme={colorTheme}
+            onBack={handleBack}
+            onSave={handleSaveResume}
+            coverLetterData={coverLetterData}
+            userName={userName}
+            resumeId={currentResumeId} 
             data={formData}
             templateId={selectedTemplate}
             colorTheme={colorTheme}
