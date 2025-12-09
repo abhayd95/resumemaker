@@ -1972,27 +1972,71 @@ body::before {
 }
 
 .demo-preview-mini .demo-preview-wrapper {
-  transform: scale(0.25);
+  transform: scale(0.2);
   transform-origin: top center;
-  width: 400%;
-  height: 400%;
+  width: 500%;
+  height: 500%;
   overflow: visible;
   position: absolute;
   top: 0;
   left: 50%;
-  margin-left: -200%;
+  margin-left: -250%;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 1;
 }
 
 .demo-preview-mini .resume-wrapper {
-  background: white;
+  background: white !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible !important;
+  width: 100% !important;
+  min-height: 100% !important;
+  display: block !important;
+  position: relative;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-.demo-preview-mini .resume-template {
-  font-size: 1em;
-  pointer-events: none;
+/* Force visibility of all template content */
+.demo-preview-mini .resume-wrapper *,
+.demo-preview-mini .resume-wrapper *::before,
+.demo-preview-mini .resume-wrapper *::after {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  color: inherit !important;
+  background: inherit !important;
+}
+
+.demo-preview-mini .resume-wrapper .template-1,
+.demo-preview-mini .resume-wrapper .template-2,
+.demo-preview-mini .resume-wrapper .template-3,
+.demo-preview-mini .resume-wrapper .template-4,
+.demo-preview-mini .resume-wrapper .template-5,
+.demo-preview-mini .resume-wrapper .template-6,
+.demo-preview-mini .resume-wrapper .template-7 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* Ensure text is readable */
+.demo-preview-mini .resume-wrapper p,
+.demo-preview-mini .resume-wrapper h1,
+.demo-preview-mini .resume-wrapper h2,
+.demo-preview-mini .resume-wrapper h3,
+.demo-preview-mini .resume-wrapper h4,
+.demo-preview-mini .resume-wrapper span,
+.demo-preview-mini .resume-wrapper div {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #333 !important;
 }
 
 .demo-card-actions {

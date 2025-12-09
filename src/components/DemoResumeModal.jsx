@@ -337,7 +337,12 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
     if (isMini) {
       return (
         <div className="demo-preview-wrapper">
-          <div className="resume-wrapper" style={{ minHeight: 'auto' }}>
+          <div className="resume-wrapper" style={{ 
+            minHeight: 'auto',
+            width: '100%',
+            display: 'block',
+            position: 'relative'
+          }}>
             <Template data={demo.data} colorTheme={colorTheme} />
           </div>
         </div>
