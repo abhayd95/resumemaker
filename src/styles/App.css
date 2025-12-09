@@ -1791,9 +1791,28 @@ body::before {
 
 .demo-resumes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
   margin-bottom: 2rem;
+  padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .demo-resumes-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0.25rem;
+  }
+  
+  .demo-resume-card {
+    padding: 1.25rem;
+    min-height: 650px;
+  }
+  
+  .demo-preview-mini {
+    height: 450px;
+    min-height: 450px;
+  }
 }
 
 .demo-resume-card {
@@ -2241,9 +2260,13 @@ body::before {
   -webkit-backface-visibility: visible;
   opacity: 1 !important;
   visibility: visible !important;
-  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .demo-preview-mini .resume-wrapper {
