@@ -200,6 +200,13 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', customColor = nu
           >
             🎨 Customize
           </button>
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('openEmailIntegration'))} 
+            className="btn-email-send"
+            title="Send Resume via Email"
+          >
+            📧 Email Resume
+          </button>
           <button onClick={onBack} className="btn-secondary">
             ← Back
           </button>

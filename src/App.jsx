@@ -10,6 +10,9 @@ import CustomizationPanel from './components/CustomizationPanel'
 import QuickActionsPanel from './components/QuickActionsPanel'
 import ResumeTipsPanel from './components/ResumeTipsPanel'
 import SectionReorder from './components/SectionReorder'
+import LinkedInImport from './components/LinkedInImport'
+import EmailIntegration from './components/EmailIntegration'
+import JobMatchScore from './components/JobMatchScore'
 import ThemeToggle from './components/ThemeToggle'
 import ResumeShareModal from './components/ResumeShareModal'
 import ATSChecker from './components/ATSChecker'
@@ -64,6 +67,9 @@ function App() {
   const [showQuickActions, setShowQuickActions] = useState(false)
   const [showResumeTips, setShowResumeTips] = useState(false)
   const [showSectionReorder, setShowSectionReorder] = useState(false)
+  const [showLinkedInImport, setShowLinkedInImport] = useState(false)
+  const [showEmailIntegration, setShowEmailIntegration] = useState(false)
+  const [showJobMatchScore, setShowJobMatchScore] = useState(false)
   const [sectionOrder, setSectionOrder] = useState([
     { id: 1, name: 'Personal Information', icon: '👤', key: 'personalInfo' },
     { id: 2, name: 'Professional Summary', icon: '📝', key: 'summary' },
@@ -103,9 +109,16 @@ function App() {
         setShowCustomization(true)
       }
     }
+    const handleOpenEmailIntegration = () => {
+      if (step === 3) {
+        setShowEmailIntegration(true)
+      }
+    }
     window.addEventListener('openCustomization', handleOpenCustomization)
+    window.addEventListener('openEmailIntegration', handleOpenEmailIntegration)
     return () => {
       window.removeEventListener('openCustomization', handleOpenCustomization)
+      window.removeEventListener('openEmailIntegration', handleOpenEmailIntegration)
     }
   }, [step])
 
@@ -565,6 +578,20 @@ function App() {
             💡 Tips
           </button>
           <button 
+            onClick={() => setShowLinkedInImport(true)}
+            className="btn-linkedin"
+            title="Import from LinkedIn"
+          >
+            🔗 LinkedIn
+          </button>
+          <button 
+            onClick={() => setShowJobMatchScore(true)}
+            className="btn-job-match"
+            title="Job Match Score"
+          >
+            🎯 Job Match
+          </button>
+          <button 
             onClick={async () => {
               if (!showSaveLoad) {
                 // Opening the panel
@@ -787,6 +814,28 @@ function App() {
             localStorage.setItem('resumeSectionOrder', JSON.stringify(newOrder))
           }}
           onClose={() => setShowSectionReorder(false)}
+        />
+      )}
+
+      {showLinkedInImport && (
+        <LinkedInImport
+          onImport={handleLinkedInImport}
+          onClose={() => setShowLinkedInImport(false)}
+        />
+      )}
+
+      {showEmailIntegration && (
+        <EmailIntegration
+          resumeData={formData}
+          resumeName={formData.personalInfo?.fullName || 'My Resume'}
+          onClose={() => setShowEmailIntegration(false)}
+        />
+      )}
+
+      {showJobMatchScore && (
+        <JobMatchScore
+          resumeData={formData}
+          onClose={() => setShowJobMatchScore(false)}
         />
       )}
 
