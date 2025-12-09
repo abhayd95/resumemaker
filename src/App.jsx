@@ -6,6 +6,7 @@ import ResumePreview from './components/ResumePreview'
 import SaveLoadPanel from './components/SaveLoadPanel'
 import DemoResumeModal from './components/DemoResumeModal'
 import ResumeExamplesLibrary from './components/ResumeExamplesLibrary'
+import CustomizationPanel from './components/CustomizationPanel'
 import ThemeToggle from './components/ThemeToggle'
 import ResumeShareModal from './components/ResumeShareModal'
 import ATSChecker from './components/ATSChecker'
@@ -46,12 +47,17 @@ function App() {
 
   const [selectedTemplate, setSelectedTemplate] = useState(1)
   const [colorTheme, setColorTheme] = useState('blue')
+  const [customColor, setCustomColor] = useState(null) // For custom color picker
+  const [selectedFont, setSelectedFont] = useState('Segoe UI') // Default font
+  const [fontSize, setFontSize] = useState('medium') // small, medium, large
+  const [previewMode, setPreviewMode] = useState('desktop') // desktop, mobile, print, ats
   const [step, setStep] = useState(1) // 1: Form, 2: Template, 3: Preview
   const [userName, setUserName] = useState('')
   const [savedResumes, setSavedResumes] = useState([])
   const [showSaveLoad, setShowSaveLoad] = useState(false)
   const [showDemoModal, setShowDemoModal] = useState(false)
   const [showExamplesLibrary, setShowExamplesLibrary] = useState(false)
+  const [showCustomization, setShowCustomization] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
   const [showATSChecker, setShowATSChecker] = useState(false)
   const [selectedResumeForShare, setSelectedResumeForShare] = useState(null)
@@ -70,6 +76,19 @@ function App() {
   useEffect(() => {
     initTheme()
   }, [])
+
+  // Listen for customization panel open event
+  useEffect(() => {
+    const handleOpenCustomization = () => {
+      if (step === 3) {
+        setShowCustomization(true)
+      }
+    }
+    window.addEventListener('openCustomization', handleOpenCustomization)
+    return () => {
+      window.removeEventListener('openCustomization', handleOpenCustomization)
+    }
+  }, [step])
 
   // Initialize history with current formData
   useEffect(() => {
@@ -718,6 +737,10 @@ function App() {
             data={formData}
             templateId={selectedTemplate}
             colorTheme={colorTheme}
+            customColor={customColor}
+            selectedFont={selectedFont}
+            fontSize={fontSize}
+            previewMode={previewMode}
             onBack={handleBack}
             onSave={handleSaveResume}
             coverLetterData={coverLetterData}

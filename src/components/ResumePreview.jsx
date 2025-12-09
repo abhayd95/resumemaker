@@ -10,7 +10,7 @@ import { generatePDF } from '../utils/pdfGenerator'
 import { exportToWord } from '../utils/wordExporter'
 import { exportToTXT, exportToHTML, exportToJSON, downloadFile } from '../utils/exportFormats'
 
-const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, coverLetterData, userName, resumeId }) => {
+const ResumePreview = ({ data, templateId, colorTheme = 'blue', customColor = null, selectedFont = 'Segoe UI', fontSize = 'medium', previewMode = 'desktop', onBack, onSave, coverLetterData, userName, resumeId }) => {
   const resumeRef = useRef(null)
   const [showExportMenu, setShowExportMenu] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
@@ -170,6 +170,13 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, 
       <div className="preview-header">
         <h2>Your Resume Preview</h2>
         <div className="preview-actions">
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('openCustomization'))} 
+            className="btn-customize"
+            title="Customize Font, Colors, and Preview Mode"
+          >
+            🎨 Customize
+          </button>
           <button onClick={onBack} className="btn-secondary">
             ← Back
           </button>
@@ -217,8 +224,16 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', onBack, onSave, 
         </div>
       </div>
 
-      <div className={`preview-container ${printMode ? 'print-mode' : ''}`}>
-        <div className="resume-wrapper" ref={resumeRef}>
+      <div className={`preview-container ${printMode ? 'print-mode' : ''} preview-${previewMode}`}>
+        <div 
+          className="resume-wrapper" 
+          ref={resumeRef}
+          style={{
+            fontFamily: selectedFont,
+            fontSize: getFontSize(),
+            '--custom-color': customColor || (colorTheme === 'blue' ? '#667eea' : colorTheme === 'green' ? '#48bb78' : colorTheme === 'purple' ? '#9f7aea' : colorTheme === 'red' ? '#f56565' : colorTheme === 'orange' ? '#ed8936' : colorTheme === 'teal' ? '#38b2ac' : colorTheme === 'pink' ? '#ed64a6' : '#667eea')
+          }}
+        >
           {renderTemplate()}
         </div>
       </div>
