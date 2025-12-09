@@ -522,19 +522,51 @@ function App() {
 
   const handleLinkedInImport = (importedData) => {
     if (importedData) {
-      updateFormData({
+      // Map LinkedIn data to formData structure
+      const mappedData = {
         ...formData,
         personalInfo: {
           ...formData.personalInfo,
-          ...importedData.personalInfo
+          fullName: importedData.fullName || formData.personalInfo.fullName,
+          email: importedData.email || formData.personalInfo.email,
+          phone: importedData.phone || formData.personalInfo.phone,
+          address: importedData.address || formData.personalInfo.address,
+          linkedin: importedData.linkedin || formData.personalInfo.linkedin
         },
         summary: importedData.summary || formData.summary,
-        experiences: importedData.experiences || formData.experiences,
-        education: importedData.education || formData.education,
-        skills: importedData.skills || formData.skills,
-        projects: importedData.projects || formData.projects
-      })
-      alert('LinkedIn data imported successfully!')
+        experiences: importedData.experience && importedData.experience.length > 0 
+          ? importedData.experience.map(exp => ({
+              position: exp.position || '',
+              company: exp.company || '',
+              startDate: exp.startDate || '',
+              endDate: exp.endDate || '',
+              current: exp.current || false,
+              description: exp.description || ''
+            }))
+          : formData.experiences,
+        education: importedData.education && importedData.education.length > 0
+          ? importedData.education.map(edu => ({
+              degree: edu.degree || '',
+              institution: edu.institution || '',
+              field: edu.field || '',
+              startDate: edu.startDate || '',
+              endDate: edu.endDate || '',
+              gpa: edu.gpa || ''
+            }))
+          : formData.education,
+        skills: importedData.skills && importedData.skills.length > 0
+          ? importedData.skills.map(skill => typeof skill === 'string' ? skill : skill.name || skill)
+          : formData.skills,
+        languages: importedData.languages && importedData.languages.length > 0
+          ? importedData.languages.map(lang => ({
+              name: lang.name || lang,
+              proficiency: lang.proficiency || 'Intermediate'
+            }))
+          : formData.languages
+      }
+      
+      updateFormData(mappedData)
+      alert('✅ LinkedIn data imported successfully! Your resume form has been updated.')
     }
   }
 
