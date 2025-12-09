@@ -1950,7 +1950,7 @@ body::before {
 }
 
 .demo-preview-mini {
-  height: 420px;
+  height: 450px;
   overflow: hidden;
   margin: 1rem 0;
   border: 2px solid #e8e8e8;
@@ -1970,15 +1970,15 @@ body::before {
 }
 
 .demo-preview-mini .demo-preview-wrapper {
-  transform: scale(0.27);
+  transform: scale(0.29);
   transform-origin: top center;
-  width: 370.37%;
-  height: 370.37%;
+  width: 344.83%;
+  height: 344.83%;
   overflow: visible;
   position: absolute;
-  top: -5px;
+  top: 0;
   left: 50%;
-  margin-left: -185.19%;
+  margin-left: -172.41%;
   pointer-events: none;
   will-change: transform;
   z-index: 1;
@@ -1986,8 +1986,9 @@ body::before {
   -webkit-backface-visibility: visible;
   opacity: 1 !important;
   visibility: visible !important;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .demo-preview-mini .resume-wrapper {
@@ -2211,11 +2212,21 @@ body::before {
   color: #333 !important;
   margin: 0.4rem 0 !important;
   padding: 0 !important;
-  line-height: 1.3 !important;
+  line-height: 1.4 !important;
   font-size: inherit !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
   text-rendering: optimizeLegibility !important;
+  font-weight: normal !important;
+}
+
+/* Ensure paragraphs and descriptions are readable */
+.demo-preview-mini .resume-wrapper p {
+  font-size: 0.95rem !important;
+  color: #555 !important;
+  text-align: left !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 /* Ensure name is visible */
@@ -2230,9 +2241,12 @@ body::before {
   visibility: visible !important;
   opacity: 1 !important;
   color: #667eea !important;
-  font-size: 2.5rem !important;
+  font-size: 2.2rem !important;
   font-weight: 700 !important;
   margin: 0.5rem 0 !important;
+  line-height: 1.2 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
 }
 
 /* Ensure section titles are visible */
@@ -2247,21 +2261,40 @@ body::before {
   visibility: visible !important;
   opacity: 1 !important;
   color: #667eea !important;
-  font-size: 1.3rem !important;
+  font-size: 1.2rem !important;
   font-weight: 600 !important;
   margin: 0.75rem 0 0.5rem 0 !important;
   padding: 0 !important;
+  line-height: 1.3 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
 }
 
 /* Ensure company and institution names are visible */
 .demo-preview-mini .resume-wrapper .company,
-.demo-preview-mini .resume-wrapper .institution {
+.demo-preview-mini .resume-wrapper .institution,
+.demo-preview-mini .resume-wrapper .organization {
   display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
   color: #667eea !important;
   font-weight: 500 !important;
+  font-size: 1rem !important;
   margin: 0 0.5rem !important;
+}
+
+/* Ensure position titles are visible */
+.demo-preview-mini .resume-wrapper .item-header h3,
+.demo-preview-mini .resume-wrapper .item-title-row h3,
+.demo-preview-mini .resume-wrapper h3 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #333 !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  margin: 0.25rem 0 !important;
+  line-height: 1.3 !important;
 }
 
 /* Ensure section content is fully visible */
@@ -2271,26 +2304,42 @@ body::before {
 .demo-preview-mini .resume-wrapper .section-content-4,
 .demo-preview-mini .resume-wrapper .section-content-5,
 .demo-preview-mini .resume-wrapper .section-content-7,
-.demo-preview-mini .resume-wrapper .item-description {
+.demo-preview-mini .resume-wrapper .item-description,
+.demo-preview-mini .resume-wrapper .item-text {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   color: #555 !important;
   margin: 0.5rem 0 !important;
   padding: 0 !important;
-  line-height: 1.4 !important;
-  text-align: justify !important;
-  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  text-align: left !important;
+  font-size: 0.95rem !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 /* Ensure dates are visible */
-.demo-preview-mini .resume-wrapper .date {
+.demo-preview-mini .resume-wrapper .date,
+.demo-preview-mini .resume-wrapper .date-range {
   display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
   color: #999 !important;
+  font-size: 0.85rem !important;
+  margin: 0 0.5rem !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
+}
+
+/* Ensure GPA is visible */
+.demo-preview-mini .resume-wrapper .gpa {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #666 !important;
   font-size: 0.9rem !important;
   margin: 0 0.5rem !important;
 }
@@ -2300,6 +2349,54 @@ body::before {
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
   text-rendering: optimizeLegibility !important;
+}
+
+/* Ensure contact information is readable */
+.demo-preview-mini .resume-wrapper .contact-info span,
+.demo-preview-mini .resume-wrapper .contact-info-2 span,
+.demo-preview-mini .resume-wrapper .contact-info-3 span,
+.demo-preview-mini .resume-wrapper .contact-info-4 span,
+.demo-preview-mini .resume-wrapper .contact-bar-5 span,
+.demo-preview-mini .resume-wrapper .contact-details span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #666 !important;
+  font-size: 0.9rem !important;
+  margin: 0.25rem 0.5rem !important;
+  white-space: nowrap !important;
+}
+
+/* Ensure links are visible */
+.demo-preview-mini .resume-wrapper a {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #667eea !important;
+  text-decoration: none !important;
+  font-size: 0.9rem !important;
+}
+
+/* Ensure field names are visible */
+.demo-preview-mini .resume-wrapper .field {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #666 !important;
+  font-size: 0.9rem !important;
+  margin: 0 0.5rem !important;
+  font-style: italic !important;
+}
+
+/* Ensure credential IDs are visible */
+.demo-preview-mini .resume-wrapper .credential-id {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #999 !important;
+  font-size: 0.85rem !important;
+  margin: 0.25rem 0 !important;
+  font-family: monospace !important;
 }
 
 /* Ensure section content is visible */
@@ -2315,13 +2412,15 @@ body::before {
 /* Ensure skills and tags are visible */
 .demo-preview-mini .resume-wrapper .skill-tag,
 .demo-preview-mini .resume-wrapper .skill-item,
+.demo-preview-mini .resume-wrapper .skill-item-2,
 .demo-preview-mini .resume-wrapper .skills-list,
 .demo-preview-mini .resume-wrapper .skills-list-2,
 .demo-preview-mini .resume-wrapper .skills-list-3,
 .demo-preview-mini .resume-wrapper .skills-list-4,
 .demo-preview-mini .resume-wrapper .skills-list-5,
 .demo-preview-mini .resume-wrapper .skills-list-6,
-.demo-preview-mini .resume-wrapper .skills-list-7 {
+.demo-preview-mini .resume-wrapper .skills-list-7,
+.demo-preview-mini .resume-wrapper .skills-grid-2 {
   display: flex !important;
   flex-wrap: wrap !important;
   visibility: visible !important;
@@ -2332,14 +2431,19 @@ body::before {
   width: 100% !important;
 }
 
-.demo-preview-mini .resume-wrapper .skill-tag {
+.demo-preview-mini .resume-wrapper .skill-tag,
+.demo-preview-mini .resume-wrapper .skill-item-2 {
   display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   margin: 0.25rem !important;
-  padding: 0.25rem 0.5rem !important;
+  padding: 0.3rem 0.6rem !important;
   background: rgba(102, 126, 234, 0.1) !important;
   border-radius: 4px !important;
   color: #667eea !important;
   font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
 }
 
 .demo-card-actions {
