@@ -347,7 +347,9 @@ const DemoResumeModal = ({ isOpen, onClose, onUseDemo }) => {
             padding: '1.5rem',
             boxSizing: 'border-box',
             overflow: 'visible',
-            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale'
           }}>
             <Template data={demo.data} colorTheme={colorTheme} />
           </div>
