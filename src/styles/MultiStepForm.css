@@ -48,45 +48,92 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #e0e0e0;
+  background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
   color: #999;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 2;
   border: 3px solid #e0e0e0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.step-progress-circle::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.step-progress-circle:hover::before {
+  opacity: 1;
 }
 
 .step-progress-circle.active {
-  background: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-color: #667eea;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2), 0 4px 15px rgba(102, 126, 234, 0.3);
+  transform: scale(1.05);
 }
 
 .step-progress-circle.current {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-color: #667eea;
-  transform: scale(1.1);
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
+  transform: scale(1.15);
+  box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.3), 0 6px 20px rgba(102, 126, 234, 0.4);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.3), 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(102, 126, 234, 0.4), 0 8px 25px rgba(102, 126, 234, 0.5);
+  }
 }
 
 .step-progress-line {
   flex: 1;
   height: 4px;
-  background: #e0e0e0;
+  background: linear-gradient(90deg, #e0e0e0 0%, #d0d0d0 100%);
   margin: 0 0.5rem;
   border-radius: 2px;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.step-progress-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .step-progress-line.active {
-  background: #667eea;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.step-progress-line.active::before {
+  width: 100%;
 }
 
 .step-names-mobile {

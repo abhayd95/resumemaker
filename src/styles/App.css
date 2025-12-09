@@ -154,28 +154,43 @@ body::before {
 }
 
 .header-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.875rem;
+  margin-top: 1.25rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.btn-save-load,
-.btn-save {
-  padding: 0.875rem 2rem;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  font-weight: 700;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
-  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 0.5px;
+@media (max-width: 1200px) {
+  .header-actions {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .header-actions {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-save-load {
+  --btn-gradient-start: #48bb78;
+  --btn-gradient-end: #38a169;
+  box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+}
+
+.btn-save-load:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(72, 187, 120, 0.45);
 }
 
 .btn-save:disabled {
@@ -194,27 +209,61 @@ body::before {
   font-weight: 800;
 }
 
-.btn-save-load::before,
-.btn-save::before {
+/* Undo/Redo Group */
+.undo-redo-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-undo,
+.btn-redo {
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.25);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-undo::before,
+.btn-redo::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s;
 }
 
-.btn-save-load:hover::before,
-.btn-save:hover::before {
+.btn-undo:hover::before,
+.btn-redo:hover::before {
   left: 100%;
 }
 
-.btn-save-load:hover,
-.btn-save:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 12px 30px rgba(40, 167, 69, 0.5);
+.btn-undo:hover:not(:disabled),
+.btn-redo:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(108, 117, 125, 0.45);
+}
+
+.btn-undo:disabled,
+.btn-redo:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .btn-demo {
@@ -3853,22 +3902,98 @@ body::before {
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
 }
 
-.btn-examples {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+/* Header Action Buttons - Premium Styling */
+.btn-examples,
+.btn-quick-actions,
+.btn-tips,
+.btn-linkedin,
+.btn-job-match,
+.btn-save-load,
+.btn-ats,
+.btn-cover-letter,
+.btn-save {
+  background: linear-gradient(135deg, var(--btn-gradient-start, #667eea) 0%, var(--btn-gradient-end, #764ba2) 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  border-radius: 12px;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  letter-spacing: 0.3px;
+}
+
+.btn-examples::before,
+.btn-quick-actions::before,
+.btn-tips::before,
+.btn-linkedin::before,
+.btn-job-match::before,
+.btn-save-load::before,
+.btn-ats::before,
+.btn-cover-letter::before,
+.btn-save::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-examples:hover::before,
+.btn-quick-actions:hover::before,
+.btn-tips:hover::before,
+.btn-linkedin:hover::before,
+.btn-job-match:hover::before,
+.btn-save-load:hover::before,
+.btn-ats:hover::before,
+.btn-cover-letter:hover::before,
+.btn-save:hover::before {
+  left: 100%;
+}
+
+.btn-examples {
+  --btn-gradient-start: #f093fb;
+  --btn-gradient-end: #f5576c;
+  box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
 }
 
 .btn-examples:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(245, 87, 108, 0.45);
+}
+
+.btn-quick-actions {
+  --btn-gradient-start: #fad961;
+  --btn-gradient-end: #f76b1c;
+  box-shadow: 0 4px 15px rgba(247, 107, 28, 0.3);
+}
+
+.btn-quick-actions:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(247, 107, 28, 0.45);
+}
+
+.btn-tips {
+  --btn-gradient-start: #84fab0;
+  --btn-gradient-end: #8fd3f4;
+  box-shadow: 0 4px 15px rgba(143, 211, 244, 0.3);
+}
+
+.btn-tips:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(143, 211, 244, 0.45);
 }
 
 /* Customization Panel Styles */
@@ -4875,21 +5000,69 @@ body::before {
 }
 
 .btn-linkedin {
-  background: linear-gradient(135deg, #0077b5 0%, #005885 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 119, 181, 0.3);
+  --btn-gradient-start: #0077b5;
+  --btn-gradient-end: #005885;
+  box-shadow: 0 4px 15px rgba(0, 119, 181, 0.3);
 }
 
 .btn-linkedin:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 119, 181, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 119, 181, 0.45);
+}
+
+.btn-job-match {
+  --btn-gradient-start: #ed8936;
+  --btn-gradient-end: #dd6b20;
+  box-shadow: 0 4px 15px rgba(237, 137, 54, 0.3);
+}
+
+.btn-job-match:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(237, 137, 54, 0.45);
+}
+
+.btn-save-load {
+  --btn-gradient-start: #48bb78;
+  --btn-gradient-end: #38a169;
+  box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+}
+
+.btn-save-load:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(72, 187, 120, 0.45);
+}
+
+.btn-ats {
+  --btn-gradient-start: #48bb78;
+  --btn-gradient-end: #2f855a;
+  box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+}
+
+.btn-ats:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(72, 187, 120, 0.45);
+}
+
+.btn-cover-letter {
+  --btn-gradient-start: #ed8936;
+  --btn-gradient-end: #c05621;
+  box-shadow: 0 4px 15px rgba(237, 137, 54, 0.3);
+}
+
+.btn-cover-letter:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(237, 137, 54, 0.45);
+}
+
+.btn-save {
+  --btn-gradient-start: #4299e1;
+  --btn-gradient-end: #3182ce;
+  box-shadow: 0 4px 15px rgba(66, 153, 225, 0.3);
+}
+
+.btn-save:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(66, 153, 225, 0.45);
 }
 
 /* Email Integration Modal Styles */
@@ -5265,23 +5438,6 @@ body::before {
   color: var(--text-primary);
 }
 
-.btn-job-match {
-  background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(237, 137, 54, 0.3);
-}
-
-.btn-job-match:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(237, 137, 54, 0.4);
-}
 
 /* Responsive */
 @media (max-width: 768px) {
