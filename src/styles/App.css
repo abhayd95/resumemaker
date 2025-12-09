@@ -1972,18 +1972,20 @@ body::before {
 }
 
 .demo-preview-mini .demo-preview-wrapper {
-  transform: scale(0.2);
+  transform: scale(0.25);
   transform-origin: top center;
-  width: 500%;
-  height: 500%;
+  width: 400%;
+  height: 400%;
   overflow: visible;
   position: absolute;
   top: 0;
   left: 50%;
-  margin-left: -250%;
+  margin-left: -200%;
   pointer-events: none;
   will-change: transform;
   z-index: 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .demo-preview-mini .resume-wrapper {
@@ -1991,12 +1993,13 @@ body::before {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   overflow: visible !important;
-  width: 100% !important;
-  min-height: 100% !important;
+  width: 210mm !important;
+  min-height: 297mm !important;
   display: block !important;
   position: relative;
-  padding: 1rem;
+  padding: 1.5rem !important;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 /* Force visibility of all template content */
