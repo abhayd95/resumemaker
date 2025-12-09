@@ -13,7 +13,10 @@ import SectionReorder from './components/SectionReorder'
 import LinkedInImport from './components/LinkedInImport'
 import EmailIntegration from './components/EmailIntegration'
 import JobMatchScore from './components/JobMatchScore'
+import GrammarSpellCheck from './components/GrammarSpellCheck'
+import BackupSync from './components/BackupSync'
 import ThemeToggle from './components/ThemeToggle'
+import { registerServiceWorker } from './utils/serviceWorker'
 import ResumeShareModal from './components/ResumeShareModal'
 import ATSChecker from './components/ATSChecker'
 import CoverLetterBuilder from './components/CoverLetterBuilder'
@@ -70,6 +73,8 @@ function App() {
   const [showLinkedInImport, setShowLinkedInImport] = useState(false)
   const [showEmailIntegration, setShowEmailIntegration] = useState(false)
   const [showJobMatchScore, setShowJobMatchScore] = useState(false)
+  const [showGrammarCheck, setShowGrammarCheck] = useState(false)
+  const [showBackupSync, setShowBackupSync] = useState(false)
   const [sectionOrder, setSectionOrder] = useState([
     { id: 1, name: 'Personal Information', icon: '👤', key: 'personalInfo' },
     { id: 2, name: 'Professional Summary', icon: '📝', key: 'summary' },
@@ -97,9 +102,32 @@ function App() {
   const [historyIndex, setHistoryIndex] = useState(-1)
   const MAX_HISTORY = 50
 
-  // Initialize theme
+  // Initialize theme and PWA
   useEffect(() => {
     initTheme()
+    registerServiceWorker()
+    
+    // Check for PWA install prompt
+    let deferredPrompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      deferredPrompt = e
+      // Show install button
+      const installBtn = document.getElementById('pwa-install-btn')
+      if (installBtn) {
+        installBtn.style.display = 'block'
+        installBtn.addEventListener('click', () => {
+          deferredPrompt.prompt()
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt')
+            }
+            deferredPrompt = null
+            installBtn.style.display = 'none'
+          })
+        })
+      }
+    })
   }, [])
 
   // Listen for customization panel open event
@@ -626,6 +654,20 @@ function App() {
                 ✅ ATS Check
               </button>
               <button 
+                onClick={() => setShowGrammarCheck(true)} 
+                className="btn-grammar"
+                title="Grammar & Spell Check"
+              >
+                ✍️ Grammar Check
+              </button>
+              <button 
+                onClick={() => setShowBackupSync(true)} 
+                className="btn-backup"
+                title="Backup & Sync Resume"
+              >
+                ☁️ Backup & Sync
+              </button>
+              <button 
                 onClick={() => setShowCoverLetter(true)} 
                 className="btn-cover-letter"
                 title="Cover Letter Builder"
@@ -836,6 +878,25 @@ function App() {
         <JobMatchScore
           resumeData={formData}
           onClose={() => setShowJobMatchScore(false)}
+        />
+      )}
+
+      {showGrammarCheck && (
+        <GrammarSpellCheck
+          resumeData={formData}
+          onClose={() => setShowGrammarCheck(false)}
+        />
+      )}
+
+      {showBackupSync && (
+        <BackupSync
+          resumeData={formData}
+          resumeName={formData.personalInfo?.fullName || 'My Resume'}
+          onClose={() => setShowBackupSync(false)}
+          onRestore={(restoredData) => {
+            setFormData(restoredData)
+            setShowBackupSync(false)
+          }}
         />
       )}
 
