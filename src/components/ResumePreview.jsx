@@ -6,6 +6,7 @@ import Template4 from './templates/Template4'
 import Template5 from './templates/Template5'
 import Template6 from './templates/Template6'
 import Template7 from './templates/Template7'
+import DropdownButton from './DropdownButton'
 import { generatePDF } from '../utils/pdfGenerator'
 import { exportToWord } from '../utils/wordExporter'
 import { exportToTXT, exportToHTML, exportToJSON, downloadFile } from '../utils/exportFormats'
@@ -211,52 +212,37 @@ const ResumePreview = ({ data, templateId, colorTheme = 'blue', customColor = nu
             ← Back
           </button>
           {onSave && (
-            <button onClick={onSave} className="btn-save">
-              💾 Save
-            </button>
+            <DropdownButton
+              label="💾 Save"
+              options={saveOptions}
+              onSelect={handleSaveSelect}
+              className="save-dropdown"
+              buttonClassName="btn-save"
+            />
           )}
-          <div className="print-actions" style={{ position: 'relative' }}>
-            <button onClick={handlePrintPreview} className="btn-print">
-              🖨️ Print
-            </button>
-            <button onClick={handlePrintSettings} className="btn-print-settings" title="Print with Settings">
-              ⚙️
-            </button>
-          </div>
-          <div className="export-dropdown" style={{ position: 'relative' }} ref={exportMenuRef}>
-            <button 
-              onClick={() => setShowExportMenu(!showExportMenu)} 
-              className="btn-export"
-              disabled={isExporting}
-            >
-              {isExporting ? '⏳ Exporting...' : '📤 Export'}
-            </button>
-            {showExportMenu && (
-              <div className="export-menu">
-                <button onClick={() => handleExport('txt')} className="export-option">
-                  📝 Plain Text (.txt)
-                </button>
-                <button onClick={() => handleExport('html')} className="export-option">
-                  🌐 HTML (.html)
-                </button>
-                <button onClick={() => handleExport('json')} className="export-option">
-                  💾 JSON (.json)
-                </button>
-                <button onClick={() => handleExport('rtf')} className="export-option">
-                  📄 RTF (.rtf)
-                </button>
-                <button onClick={() => handleExport('markdown')} className="export-option">
-                  📝 Markdown (.md)
-                </button>
-              </div>
-            )}
-          </div>
-          <button onClick={handleDownloadWord} className="btn-word">
-            📄 Download Word
-          </button>
-          <button onClick={handleDownload} className="btn-primary">
-            📥 Download PDF
-          </button>
+          <DropdownButton
+            label="🖨️ Print"
+            options={printOptions}
+            onSelect={handlePrintSelect}
+            className="print-dropdown"
+            buttonClassName="btn-print"
+          />
+          <DropdownButton
+            label={isExporting ? '⏳ Exporting...' : '📤 Export'}
+            options={exportOptions}
+            onSelect={handleExportSelect}
+            className="export-dropdown"
+            buttonClassName="btn-export"
+            align="right"
+          />
+          <DropdownButton
+            label="📥 Download"
+            options={downloadOptions}
+            onSelect={handleDownloadSelect}
+            className="download-dropdown"
+            buttonClassName="btn-primary"
+            align="right"
+          />
         </div>
       </div>
 
