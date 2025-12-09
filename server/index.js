@@ -7,6 +7,7 @@ import resumeRoutes from './routes/resumeRoutes.js'
 import { initializePool, getPool } from './config/db.js'
 import { startCronJobs, getCronJobStatus } from './jobs/cronJobs.js'
 
+
 dotenv.config()
 
 const __filename = fileURLToPath(
