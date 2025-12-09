@@ -790,25 +790,65 @@ function App() {
               >
                 📝 Cover Letter
               </button>
-              {/* Undo/Redo buttons */}
-              <div className="undo-redo-group">
-                <button 
-                  onClick={handleUndo} 
-                  className="btn-undo"
-                  disabled={historyIndex <= 0}
-                  title="Undo (Ctrl+Z)"
-                >
-                  ↶ Undo
-                </button>
-                <button 
-                  onClick={handleRedo} 
-                  className="btn-redo"
-                  disabled={historyIndex >= history.length - 1}
-                  title="Redo (Ctrl+Y)"
-                >
-                  ↷ Redo
-                </button>
-              </div>
+              <DropdownButton
+                label="↶ Undo"
+                options={[
+                  { label: 'Undo Last Action', icon: '↶', value: 'undo', shortcut: 'Ctrl+Z', disabled: historyIndex <= 0 },
+                  { label: 'Undo Multiple', icon: '↶↶', value: 'multiple', disabled: historyIndex <= 0 },
+                  { label: 'View History', icon: '📜', value: 'history' },
+                  { label: 'Clear History', icon: '🗑️', value: 'clear', danger: true }
+                ]}
+                onSelect={(option) => {
+                  switch(option.value) {
+                    case 'undo':
+                      handleUndo()
+                      break
+                    case 'multiple':
+                      for (let i = 0; i < 3 && historyIndex > 0; i++) {
+                        handleUndo()
+                      }
+                      break
+                    case 'history':
+                      alert(`History: ${history.length} actions, current index: ${historyIndex}`)
+                      break
+                    case 'clear':
+                      if (confirm('Clear all history?')) {
+                        setHistory([formData])
+                        setHistoryIndex(0)
+                      }
+                      break
+                  }
+                }}
+                className="undo-dropdown"
+                buttonClassName="btn-undo"
+              />
+              <DropdownButton
+                label="↷ Redo"
+                options={[
+                  { label: 'Redo Last Action', icon: '↷', value: 'redo', shortcut: 'Ctrl+Y', disabled: historyIndex >= history.length - 1 },
+                  { label: 'Redo Multiple', icon: '↷↷', value: 'multiple', disabled: historyIndex >= history.length - 1 },
+                  { label: 'Redo All', icon: '↷↷↷', value: 'all', disabled: historyIndex >= history.length - 1 }
+                ]}
+                onSelect={(option) => {
+                  switch(option.value) {
+                    case 'redo':
+                      handleRedo()
+                      break
+                    case 'multiple':
+                      for (let i = 0; i < 3 && historyIndex < history.length - 1; i++) {
+                        handleRedo()
+                      }
+                      break
+                    case 'all':
+                      while (historyIndex < history.length - 1) {
+                        handleRedo()
+                      }
+                      break
+                  }
+                }}
+                className="redo-dropdown"
+                buttonClassName="btn-redo"
+              />
             </>
           )}
           {step === 1 && formData.personalInfo.fullName && (
