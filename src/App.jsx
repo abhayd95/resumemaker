@@ -739,57 +739,112 @@ function App() {
           </button>
           {step === 1 && (
             <>
-              <button 
-                onClick={() => setShowATSChecker(true)} 
-                className="btn-ats"
-                title="Check ATS Compatibility (Ctrl+K)"
-              >
-                ✅ ATS Check
-              </button>
-              <button 
-                onClick={() => setShowGrammarCheck(true)} 
-                className="btn-grammar"
-                title="Grammar & Spell Check"
-              >
-                ✍️ Grammar Check
-              </button>
-              <button 
-                onClick={() => setShowBackupSync(true)} 
-                className="btn-backup"
-                title="Backup & Sync Resume"
-              >
-                ☁️ Backup & Sync
-              </button>
-              <button 
-                onClick={() => setShowAIAssistant(true)} 
-                className="btn-ai-assistant"
-                title="AI Resume Writing Assistant"
-              >
-                🤖 AI Assistant
-              </button>
+              <DropdownButton
+                label="✅ ATS Check"
+                options={[
+                  { label: 'Check ATS Compatibility', icon: '✅', value: 'check', shortcut: 'Ctrl+K' },
+                  { label: 'Keyword Suggestions', icon: '🔑', value: 'keywords' },
+                  { label: 'Format Check', icon: '📋', value: 'format' },
+                  { label: 'Score History', icon: '📊', value: 'history' },
+                  { label: 'Improvement Tips', icon: '💡', value: 'tips' }
+                ]}
+                onSelect={(option) => {
+                  setShowATSChecker(true)
+                }}
+                className="ats-dropdown"
+                buttonClassName="btn-ats"
+              />
+              <DropdownButton
+                label="✍️ Grammar Check"
+                options={[
+                  { label: 'Check Grammar & Spelling', icon: '✍️', value: 'check' },
+                  { label: 'Spell Check', icon: '🔤', value: 'spell' },
+                  { label: 'Grammar Check', icon: '📝', value: 'grammar' },
+                  { label: 'Quality Score', icon: '⭐', value: 'quality' },
+                  { label: 'Suggestions', icon: '💡', value: 'suggestions' }
+                ]}
+                onSelect={(option) => {
+                  setShowGrammarCheck(true)
+                }}
+                className="grammar-dropdown"
+                buttonClassName="btn-grammar"
+              />
+              <DropdownButton
+                label="☁️ Backup & Sync"
+                options={[
+                  { label: 'Backup Resume', icon: '💾', value: 'backup' },
+                  { label: 'Sync to Cloud', icon: '☁️', value: 'sync' },
+                  { label: 'Restore Backup', icon: '📥', value: 'restore' },
+                  { label: 'Auto Sync Settings', icon: '⚙️', value: 'settings' },
+                  { label: 'Backup History', icon: '📜', value: 'history' }
+                ]}
+                onSelect={(option) => {
+                  setShowBackupSync(true)
+                }}
+                className="backup-dropdown"
+                buttonClassName="btn-backup"
+              />
+              <DropdownButton
+                label="🤖 AI Assistant"
+                options={[
+                  { label: 'Open AI Assistant', icon: '🤖', value: 'open', shortcut: 'Ctrl+A' },
+                  { label: 'Content Suggestions', icon: '💡', value: 'suggestions' },
+                  { label: 'Optimize Summary', icon: '📝', value: 'summary' },
+                  { label: 'Enhance Experience', icon: '💼', value: 'experience' },
+                  { label: 'Generate Content', icon: '✨', value: 'generate' }
+                ]}
+                onSelect={(option) => {
+                  setShowAIAssistant(true)
+                }}
+                className="ai-assistant-dropdown"
+                buttonClassName="btn-ai-assistant"
+              />
               {savedResumes.length >= 2 && (
-                <button 
-                  onClick={() => setShowResumeComparison(true)} 
-                  className="btn-compare"
-                  title="Compare Resumes"
-                >
-                  📊 Compare
-                </button>
+                <DropdownButton
+                  label="📊 Compare"
+                  options={[
+                    { label: 'Compare Resumes', icon: '📊', value: 'compare' },
+                    { label: 'Side by Side', icon: '↔️', value: 'sidebyside' },
+                    { label: 'Differences Only', icon: '🔍', value: 'diff' },
+                    { label: 'Version History', icon: '📜', value: 'versions' }
+                  ]}
+                  onSelect={(option) => {
+                    setShowResumeComparison(true)
+                  }}
+                  className="compare-dropdown"
+                  buttonClassName="btn-compare"
+                />
               )}
-              <button 
-                onClick={() => setShowPortfolio(true)} 
-                className="btn-portfolio"
-                title="Portfolio Integration"
-              >
-                🎨 Portfolio
-              </button>
-              <button 
-                onClick={() => setShowCoverLetter(true)} 
-                className="btn-cover-letter"
-                title="Cover Letter Builder"
-              >
-                📝 Cover Letter
-              </button>
+              <DropdownButton
+                label="🎨 Portfolio"
+                options={[
+                  { label: 'Portfolio Integration', icon: '🎨', value: 'open', shortcut: 'Ctrl+P' },
+                  { label: 'Add Project', icon: '➕', value: 'add' },
+                  { label: 'GitHub Integration', icon: '💻', value: 'github' },
+                  { label: 'Image Gallery', icon: '🖼️', value: 'images' },
+                  { label: 'Video Portfolio', icon: '🎥', value: 'videos' }
+                ]}
+                onSelect={(option) => {
+                  setShowPortfolio(true)
+                }}
+                className="portfolio-dropdown"
+                buttonClassName="btn-portfolio"
+              />
+              <DropdownButton
+                label="📝 Cover Letter"
+                options={[
+                  { label: 'Cover Letter Builder', icon: '📝', value: 'builder', shortcut: 'Ctrl+L' },
+                  { label: 'Templates', icon: '📄', value: 'templates' },
+                  { label: 'Auto-fill from Resume', icon: '🔄', value: 'autofill' },
+                  { label: 'Export Cover Letter', icon: '📤', value: 'export' },
+                  { label: 'Save Cover Letter', icon: '💾', value: 'save' }
+                ]}
+                onSelect={(option) => {
+                  setShowCoverLetter(true)
+                }}
+                className="cover-letter-dropdown"
+                buttonClassName="btn-cover-letter"
+              />
               <DropdownButton
                 label="↶ Undo"
                 options={[
