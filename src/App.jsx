@@ -600,40 +600,118 @@ function App() {
           <ThemeToggle />
         </div>
         <div className="header-actions">
-          <button 
-            onClick={() => setShowExamplesLibrary(true)}
-            className="btn-examples"
-          >
-            📚 Resume Examples
-          </button>
-          <button 
-            onClick={() => setShowQuickActions(true)}
-            className="btn-quick-actions"
-            title="Quick Actions & Shortcuts"
-          >
-            ⚡ Quick Actions
-          </button>
-          <button 
-            onClick={() => setShowResumeTips(true)}
-            className="btn-tips"
-            title="Resume Tips & Guides"
-          >
-            💡 Tips
-          </button>
-          <button 
-            onClick={() => setShowLinkedInImport(true)}
-            className="btn-linkedin"
-            title="Import from LinkedIn"
-          >
-            🔗 LinkedIn
-          </button>
-          <button 
-            onClick={() => setShowJobMatchScore(true)}
-            className="btn-job-match"
-            title="Job Match Score"
-          >
-            🎯 Job Match
-          </button>
+          <DropdownButton
+            label="📚 Resume Examples"
+            options={[
+              { label: 'View Examples', icon: '👁️', value: 'view', shortcut: 'Ctrl+E' },
+              { label: 'Tech Examples', icon: '💻', value: 'tech' },
+              { label: 'Design Examples', icon: '🎨', value: 'design' },
+              { label: 'Business Examples', icon: '💼', value: 'business' },
+              { label: 'Student Examples', icon: '🎓', value: 'student' }
+            ]}
+            onSelect={(option) => {
+              if (option.value === 'view') {
+                setShowExamplesLibrary(true)
+              } else {
+                setShowExamplesLibrary(true)
+                // Filter by category
+              }
+            }}
+            className="examples-dropdown"
+            buttonClassName="btn-examples"
+          />
+          <DropdownButton
+            label="⚡ Quick Actions"
+            options={[
+              { label: 'Open Quick Actions', icon: '⚡', value: 'open', shortcut: 'Ctrl+Q' },
+              { label: 'Save Resume', icon: '💾', value: 'save', shortcut: 'Ctrl+S' },
+              { label: 'Download PDF', icon: '📥', value: 'download', shortcut: 'Ctrl+D' },
+              { label: 'Share Resume', icon: '🔗', value: 'share', shortcut: 'Ctrl+Shift+S' },
+              { label: 'ATS Check', icon: '✅', value: 'ats', shortcut: 'Ctrl+K' },
+              { label: 'Cover Letter', icon: '📝', value: 'cover', shortcut: 'Ctrl+L' }
+            ]}
+            onSelect={(option) => {
+              switch(option.value) {
+                case 'open':
+                  setShowQuickActions(true)
+                  break
+                case 'save':
+                  if (step === 2 || step === 3) handleSaveResume()
+                  break
+                case 'download':
+                  if (step === 3) {
+                    const downloadBtn = document.querySelector('.btn-primary')
+                    if (downloadBtn) downloadBtn.click()
+                  }
+                  break
+                case 'share':
+                  if (step === 3 && currentResumeId) {
+                    const resume = savedResumes.find(r => r.id === currentResumeId)
+                    if (resume) {
+                      setSelectedResumeForShare(resume)
+                      setShowShareModal(true)
+                    }
+                  }
+                  break
+                case 'ats':
+                  setShowATSChecker(true)
+                  break
+                case 'cover':
+                  setShowCoverLetter(true)
+                  break
+              }
+            }}
+            className="quick-actions-dropdown"
+            buttonClassName="btn-quick-actions"
+          />
+          <DropdownButton
+            label="💡 Tips"
+            options={[
+              { label: 'View All Tips', icon: '💡', value: 'view' },
+              { label: 'Personal Info Tips', icon: '👤', value: 'personal' },
+              { label: 'Summary Tips', icon: '📝', value: 'summary' },
+              { label: 'Experience Tips', icon: '💼', value: 'experience' },
+              { label: 'Education Tips', icon: '🎓', value: 'education' },
+              { label: 'Skills Tips', icon: '🛠️', value: 'skills' },
+              { label: 'Projects Tips', icon: '🚀', value: 'projects' }
+            ]}
+            onSelect={(option) => {
+              setShowResumeTips(true)
+              // Could filter tips by category
+            }}
+            className="tips-dropdown"
+            buttonClassName="btn-tips"
+          />
+          <DropdownButton
+            label="🔗 LinkedIn"
+            options={[
+              { label: 'Import from LinkedIn', icon: '📥', value: 'import' },
+              { label: 'Manual Entry', icon: '✍️', value: 'manual' },
+              { label: 'URL Import', icon: '🔗', value: 'url' },
+              { label: 'File Upload', icon: '📄', value: 'file' },
+              { label: 'View Profile', icon: '👁️', value: 'view' }
+            ]}
+            onSelect={(option) => {
+              setShowLinkedInImport(true)
+            }}
+            className="linkedin-dropdown"
+            buttonClassName="btn-linkedin"
+          />
+          <DropdownButton
+            label="🎯 Job Match"
+            options={[
+              { label: 'Analyze Job Match', icon: '🎯', value: 'analyze' },
+              { label: 'Keyword Analysis', icon: '🔍', value: 'keywords' },
+              { label: 'Skills Gap', icon: '📊', value: 'skills' },
+              { label: 'Improvement Tips', icon: '💡', value: 'tips' },
+              { label: 'Match History', icon: '📈', value: 'history' }
+            ]}
+            onSelect={(option) => {
+              setShowJobMatchScore(true)
+            }}
+            className="job-match-dropdown"
+            buttonClassName="btn-job-match"
+          />
           <button 
             onClick={async () => {
               if (!showSaveLoad) {
