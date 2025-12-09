@@ -513,6 +513,12 @@ function App() {
             📋 View Demo Resumes
           </button>
           <button 
+            onClick={() => setShowExamplesLibrary(true)}
+            className="btn-examples"
+          >
+            📚 Resume Examples
+          </button>
+          <button 
             onClick={async () => {
               if (!showSaveLoad) {
                 // Opening the panel
