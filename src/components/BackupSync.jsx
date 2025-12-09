@@ -66,8 +66,10 @@ const BackupSync = ({ resumeData, resumeName, onClose, onRestore }) => {
         // Restore resume data
         if (onRestore) {
           onRestore(latestBackup.resumeData)
+          alert('Resume restored successfully!')
+        } else {
+          alert('Restore function not available')
         }
-        alert('Resume restored successfully!')
       }
       
       setIsRestoring(false)

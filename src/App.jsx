@@ -572,7 +572,7 @@ function App() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal, showCoverLetter, showVersionHistory, historyIndex, history])
+  }, [step, formData, showShareModal, showATSChecker, showSaveLoad, showDemoModal, showCoverLetter, showVersionHistory, historyIndex, history, showGrammarCheck, showBackupSync, showLinkedInImport, showEmailIntegration, showJobMatchScore])
 
   return (
     <div className="app">

@@ -8,6 +8,11 @@ const QuickActionsPanel = ({
   onCoverLetter,
   onExamples,
   onCustomize,
+  onGrammarCheck,
+  onBackupSync,
+  onLinkedInImport,
+  onEmailIntegration,
+  onJobMatch,
   onClose 
 }) => {
   const quickActions = [
@@ -42,6 +47,46 @@ const QuickActionsPanel = ({
       action: onATSCheck,
       shortcut: 'Ctrl+K',
       color: '#48bb78'
+    },
+    {
+      id: 'grammar',
+      name: 'Grammar Check',
+      icon: '✍️',
+      action: onGrammarCheck,
+      shortcut: 'Ctrl+G',
+      color: '#8b5cf6'
+    },
+    {
+      id: 'backup',
+      name: 'Backup & Sync',
+      icon: '☁️',
+      action: onBackupSync,
+      shortcut: 'Ctrl+B',
+      color: '#4299e1'
+    },
+    {
+      id: 'linkedin',
+      name: 'LinkedIn Import',
+      icon: '🔗',
+      action: onLinkedInImport,
+      shortcut: 'Ctrl+I',
+      color: '#0077b5'
+    },
+    {
+      id: 'email',
+      name: 'Email Resume',
+      icon: '📧',
+      action: onEmailIntegration,
+      shortcut: 'Ctrl+M',
+      color: '#f56565'
+    },
+    {
+      id: 'jobmatch',
+      name: 'Job Match',
+      icon: '🎯',
+      action: onJobMatch,
+      shortcut: 'Ctrl+J',
+      color: '#ed8936'
     },
     {
       id: 'cover',

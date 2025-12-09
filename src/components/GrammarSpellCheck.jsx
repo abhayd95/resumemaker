@@ -92,15 +92,16 @@ const GrammarSpellCheck = ({ resumeData, onClose }) => {
         'occassion': 'occasion',
         'persistant': 'persistent',
         'priviledge': 'privilege',
-        'recieve': 'receive',
-        'seperate': 'separate',
         'sucessful': 'successful',
         'thier': 'their',
         'tommorrow': 'tomorrow',
         'truely': 'truly',
         'untill': 'until',
         'wich': 'which',
-        'writting': 'writing'
+        'writting': 'writing',
+        'recieved': 'received',
+        'seperated': 'separated',
+        'occuring': 'occurring'
       }
 
       const foundErrors = []
